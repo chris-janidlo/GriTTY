@@ -60,10 +60,9 @@ function Terminal.keypressed(self, key)
 		self.input = l .. r
 
 	elseif key == "return" then
-		local output = self.input
+		Signal.emit('tty_text_input', self.input)
 		self.input = ""
 		self.cursor_pos = -1
-		Signal.emit('tty_out', output)
 
 	elseif key == "left" then
 		-- cursor can, at most, be one to the left of the current input (when we want to insert at the beginning)

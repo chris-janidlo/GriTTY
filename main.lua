@@ -23,6 +23,6 @@ function love.draw()
 	Entities.CallAll('draw')
 end
 
-Signal.register('tty_out', function (output)
-	print(output)
+Signal.register('tty_text_input', function (input)
+	print(input)
 end)
