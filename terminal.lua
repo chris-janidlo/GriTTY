@@ -71,7 +71,6 @@ function Terminal.keypressed(self, key)
 	elseif key == "right" then
 		self.cursor_pos = math.min(self.cursor_pos + 1, -1)
 	end
-	self._cursor_blink_timer = self.cursor_blink_delay	
 end
 
 function Terminal.draw(self)
