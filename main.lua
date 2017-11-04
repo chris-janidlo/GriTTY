@@ -1,6 +1,9 @@
 Entities = require 'ecs'
+Signal = require 'hump.signal'
+require 'terminal'
 
 function love.load()
+	MainFont = love.graphics.setNewFont('Monoid/Monoid-Regular.ttf')
 	Entities.CallAll('load')
 end
 
@@ -19,3 +22,7 @@ end
 function love.draw()
 	Entities.CallAll('draw')
 end
+
+Signal.register('tty_out', function (output)
+	print(output)
+end)
