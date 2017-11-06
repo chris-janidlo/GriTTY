@@ -1,6 +1,6 @@
-Entities = require 'ecs'
-Signal = require 'hump.signal'
-require 'terminal'
+local Entities = require 'ecs'
+local Signal = require 'hump.signal'
+local terminal = require 'terminal'
 
 function love.load()
 	MainFont = love.graphics.setNewFont('Monoid/Monoid-Regular.ttf')

@@ -1,6 +1,6 @@
-Entities = require 'ecs'
-utf8 = require 'utf8'
-Signal = require 'hump.signal'
+local Entities = require 'ecs'
+local utf8 = require 'utf8'
+local Signal = require 'hump.signal'
 
 local Terminal = {}
 
