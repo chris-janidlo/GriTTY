@@ -1,10 +1,10 @@
-local Entities = require 'ecs'
+local GameObject = require 'GameObject'
 local utf8 = require 'utf8'
 local Signal = require 'hump.signal'
 
 local Terminal = {}
 
-table.insert(Entities, Terminal)
+GameObject:Register(Terminal)
 
 -- returns the current input string split around the current cursor position
 -- if trim is true, it trims the left hand side by one character before returning
