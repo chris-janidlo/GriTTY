@@ -1,6 +1,6 @@
 local GameObject = require 'GameObject'
 local Signal = require 'hump.signal'
-local Terminal = require 'terminal'
+local Terminal = require 'Terminal'
 
 function love.load()
 	MainFont = love.graphics.setNewFont('Monoid/Monoid-Regular.ttf')
