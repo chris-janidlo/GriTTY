@@ -8,7 +8,7 @@ function GameObject:CallAll(f, ...)
 end
 
 function GameObject:Register(object)
-	table.insert(GameObject, object)
+	table.insert(self, object)
 end
 
 return GameObject
