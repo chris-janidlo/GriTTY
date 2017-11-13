@@ -1,6 +1,8 @@
 local GameObject = require 'GameObject'
 local Signal = require 'hump.signal'
 local Terminal = require 'Terminal'
+local Timer = require 'hump.timer'
+local CombatState = require 'CombatState'
 
 function love.load()
 	MainFont = love.graphics.setNewFont('Monoid/Monoid-Regular.ttf')
@@ -17,6 +19,7 @@ end
 
 function love.update(dt)
 	GameObject:CallAll('update', dt)
+	Timer.update(dt)
 end
 
 function love.draw()
