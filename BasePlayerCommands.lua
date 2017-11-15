@@ -1,22 +1,36 @@
 local IntPoint = require 'IntPoint'
 
-local commands = {}
+local cmds = {}
 
-function commands.move(point)
-	return function(player)
-		return function(wait)
-			player.animating = true; player.color[2], player.color[3] = 0, 0
-			wait(.25)
-			player:setLocation(player:getLocation() + point)
-			wait(.25)
-			player.animating = false; player.color[2], player.color[3] = 255, 255
-		end
-	end
+-- expansions
+cmds._e = {
+	-- wasd
+	w = IntPoint(0, -1),
+	a = IntPoint(-1, 0),
+	s = IntPoint(0, 1),
+	d = IntPoint(1, 0)
+}
+
+function cmds.move(point)
+	return {
+		{
+			function(player) player.color[2], player.color[3] = 0, 0 end,
+			.25
+		},
+		{
+			function(player) player:setLocation(player:getLocation() + point) end,
+			.25
+		},
+		{
+			function(player) player.color[2], player.color[3] = 255, 255 end,
+			0
+		}
+	}
 end
 
-commands.w = commands.move(IntPoint(0, -1))
-commands.a = commands.move(IntPoint(-1, 0))
-commands.s = commands.move(IntPoint(0, 1))
-commands.d = commands.move(IntPoint(1, 0))
+cmds.w = cmds.move(cmds._e.w)
+cmds.a = cmds.move(cmds._e.a)
+cmds.s = cmds.move(cmds._e.s)
+cmds.d = cmds.move(cmds._e.d)
 
-return commands
+return cmds

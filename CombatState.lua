@@ -34,9 +34,7 @@ end
 
 Signal.register('tty_text_input', function(input)
 	-- this is in a mock state. needs a dedicated toy parser for complex commands with arguments and things like command;command
-	if not CombatState.player.animating then
-		CombatState.player:action(commands[input])
-	end
+	CombatState.player:action(commands[input])
 end)
 
 return CombatState
