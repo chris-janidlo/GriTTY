@@ -36,8 +36,10 @@ function CombatEntity:setIndicator(newInd, permanent)
 end
 
 function CombatEntity:resetIndicator()
-	self.indicator = self._tmpInd or self.indicator
-	self._tmpInd = nil
+	if self._tmpInd then
+		self.indicator = self._tmpInd
+		self._tmpInd = nil
+	end
 end
 
 function CombatEntity:__tostring()
