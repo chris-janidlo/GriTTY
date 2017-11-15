@@ -16,10 +16,17 @@ function CombatState:load()
 	self.center = Vector.new(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 	self.offset = MainFont:getHeight() -- height should always be greater than width, but we want a square, so use height as both height and width
 
-	self.entities = BidirectionalMap() -- only ever set in point-entity order
+	-- maps for objects and points
+	-- only ever set in point-object order
+	self.entities = BidirectionalMap() -- moving agents (player, enemies)
+	self.projectiles = BidirectionalMap() -- things that interact on collision with entities (bullets, sword lines)
+	self.particles = BidirectionalMap() -- purely visual effects go here
+
+	-- the above maps all use the same playing field, which is:
 	self.field = PointField.new(-16, 16, -16, 16)
 
 	self.entities:set(self.field(0,0), self.player)
+	self.entities:set(self.field(1,0), CombatEntity('p', self))
 end
 
 function CombatState:draw()

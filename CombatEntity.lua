@@ -19,7 +19,12 @@ function CombatEntity:getLocation()
 end
 
 function CombatEntity:setLocation(point)
-	self.parentState.entities:set(point, self)
+	newLoc = self.parentState.field(point.x, point.y)
+	if not self.parentState.entities:get(newLoc) then
+		self.parentState.entities:set(newLoc, self)
+	else
+		Signal.emit('tty-bell', 'can\'t move there')
+	end
 end
 
 -- (re)sets color
