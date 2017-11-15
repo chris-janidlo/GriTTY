@@ -3,6 +3,7 @@ local Signal = require 'hump.signal'
 local PointField = require 'StaticIntPointField'
 local BidirectionalMap = require 'BidirectionalMap'
 local CombatEntity = require 'CombatEntity'
+local CombatAgent = require 'CombatAgent'
 local GameObject = require 'GameObject'
 local commands = require 'BasePlayerCommands'
 
@@ -11,32 +12,60 @@ local CombatState = {}
 GameObject:Register(CombatState)
 
 function CombatState:load()
-	self.player = CombatEntity('o', self)
-	
 	self.center = Vector.new(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 	self.offset = MainFont:getHeight() -- height should always be greater than width, but we want a square, so use height as both height and width
-
-	-- maps for objects and points
-	-- only ever set in point-object order
-	self.entities = BidirectionalMap() -- moving agents (player, enemies)
+	
+	-- maps for objects and entities
+	-- only ever set in point-entity order
+	self.agents = BidirectionalMap() -- moving agents (player, enemies)
 	self.projectiles = BidirectionalMap() -- things that interact on collision with entities (bullets, sword lines)
 	self.particles = BidirectionalMap() -- purely visual effects go here
+	
+	self.player = CombatAgent('o', PointField(0,0))
 
-	-- the above maps all use the same playing field, which is:
-	self.field = PointField.new(-16, 16, -16, 16)
+	self.agents:set(PointField(0,0), self.player)
+	self.agents:set(PointField(1,0), CombatEntity('p', PointField(1,0)))
+end
 
-	self.entities:set(self.field(0,0), self.player)
-	self.entities:set(self.field(1,0), CombatEntity('p', self))
+function CombatState:drawEntityMap(map)
+	for location,ent in map:iterator() do
+		-- we draw at ent.location instead of location because it's the most up to date location we have. otherwise there's a stutter
+		love.graphics.print(
+			{ ent.color, ent.indicator },
+			ent.location.x * self.offset + self.center.x,
+			ent.location.y * self.offset + self.center.y
+		)
+	end
 end
 
 function CombatState:draw()
-	for location,ent in pairs(self.entities._forward) do -- TODO: would love to use pairs(self.entities) but LOVE uses Lua 5.1 and __pairs was added in Lua 5.2
-		love.graphics.print(
-			{ ent.color, ent.indicator },
-			location.x * self.offset + self.center.x,
-			location.y * self.offset + self.center.y
-		)
+	self:drawEntityMap(self.agents)
+	self:drawEntityMap(self.projectiles)
+	self:drawEntityMap(self.particles)
+end
+
+-- movement happens here
+function CombatState:updateEntityPositionsInMap(map)
+	stuffToSet = {}
+	for location,ent in map:iterator() do
+		-- use stuffToSet so that we don't modify the table while iterating over it
+		if ent.location ~= location then stuffToSet[ent.location] = ent end
 	end
+	for location,ent in pairs(stuffToSet) do
+		if not map:get(location) then
+			-- no collision; respect the location the entity is asking for
+			map:set(location, ent)
+		else
+			-- there's a collision; fix the entity's location but keep the map location the same
+			ent.location = map:get(ent)
+		end
+	end
+end
+
+function CombatState:update(dt)
+	self:updateEntityPositionsInMap(self.agents)
+	self:updateEntityPositionsInMap(self.projectiles)
+	self:updateEntityPositionsInMap(self.particles)
 end
 
 Signal.register('tty_text_input', function(input)
