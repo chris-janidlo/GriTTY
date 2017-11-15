@@ -14,7 +14,7 @@ cmds._e = {
 function cmds.move(point)
 	return {
 		{
-			function(player) player.color[2], player.color[3] = 0, 0 end,
+			function(player) player:setColor(255,0,0) end,
 			.25
 		},
 		{
@@ -22,7 +22,7 @@ function cmds.move(point)
 			.25
 		},
 		{
-			function(player) player.color[2], player.color[3] = 255, 255 end,
+			function(player) player:setColor() end,
 			0
 		}
 	}

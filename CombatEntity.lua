@@ -22,6 +22,12 @@ function CombatEntity:setLocation(point)
 	self.parentState.entities:set(point, self)
 end
 
+-- (re)sets color
+-- default: white, full alpha
+function CombatEntity:setColor(r, g, b, a)
+	self.color = {r or 255, g or 255, b or 255, a or 255}
+end
+
 function CombatEntity:__tostring()
 	return '<CombatEntity: '..self.indicator..'>'
 end
