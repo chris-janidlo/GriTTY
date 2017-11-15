@@ -6,24 +6,11 @@ local CombatEntity = Class{}
 
 CombatEntity.maxHealth = 100
 
-function CombatEntity:init(indicator, parentState)
+function CombatEntity:init(indicator, location)
 	self.indicator = indicator
-	self.parentState = parentState
+	self.location = location
 	self.health = maxHealth
 	self.color = { 255, 255, 255, 255 }
-end
-
-function CombatEntity:getLocation()
-	return self.parentState.entities:get(self)
-end
-
-function CombatEntity:setLocation(point)
-	newLoc = self.parentState.field(point.x, point.y)
-	if not self.parentState.entities:get(newLoc) then
-		self.parentState.entities:set(newLoc, self)
-	else
-		Signal.emit('tty-bell', 'can\'t move there')
-	end
 end
 
 -- (re)sets color
