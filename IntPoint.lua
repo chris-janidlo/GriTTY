@@ -38,4 +38,14 @@ function IntPoint.__add(lhs, rhs)
 	end
 end
 
+function IntPoint.__mul(lhs, rhs)
+	if type(lhs) == 'number' then
+		assertIntegers(lhs)
+		return IntPoint(rhs.x * lhs, rhs.y * lhs, true)
+	elseif type(rhs) == 'number' then
+		assertIntegers(rhs)
+		return IntPoint(lhs.x * rhs, lhs.y * rhs, true)
+	end
+end
+
 return IntPoint
