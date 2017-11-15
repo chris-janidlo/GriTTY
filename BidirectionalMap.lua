@@ -34,6 +34,10 @@ function BidirectionalMap:set(val1, val2)
 	self._backward[val2] = val1
 end
 
+function BidirectionalMap:iterator()
+	return pairs(self._forward)
+end
+
 function BidirectionalMap:__tostring()
 	out = '<BidirectionalMap: ['
 	for val1, val2 in pairs(self._forward) do
