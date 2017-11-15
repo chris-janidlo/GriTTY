@@ -1,20 +1,19 @@
--- view of IntPoint that guarantees, after initialization, equality between any point calls
--- usage: local PointField = require '<thisfilename>'; local field = PointField.new(<bounds>); local p, q = field(0,0), field(0,0); print(p == q)
-
+-- view of IntPoint that guarantees, after a require, equality between any point calls
+-- TODO: add math ops here to replace weird manual casting
+-- TODO: bounds checking here?
+-- TODO: maybe add a function to return a zoomed in view?
 local IntPoint = require 'IntPoint'
 
-local StaticIntPointField = {}
+local StaticIntPointField = {__call = function(self, x, y) return self[x][y] end}
 
-function StaticIntPointField.new(lower_x, upper_x, lower_y, upper_y)
-	field = {__call = function(self, x, y) return self[x][y] end}
-	field.lower_x, field.upper_x, field.lower_y, field.upper_y = lower_x, upper_x, lower_y, upper_y
-	for x = field.lower_x,field.upper_x do
-		field[x] = {}
-		for y = field.lower_y,field.upper_y do
-			field[x][y] = IntPoint(x, y)
-		end
+-- set these to arbitrarily large values
+StaticIntPointField.lower, StaticIntPointField.upper = -128, 128
+
+for x = StaticIntPointField.lower,StaticIntPointField.upper do
+	StaticIntPointField[x] = {}
+	for y = StaticIntPointField.lower,StaticIntPointField.upper do
+		StaticIntPointField[x][y] = IntPoint(x, y)
 	end
-	return setmetatable(field, field)
 end
 
-return StaticIntPointField
+return setmetatable(StaticIntPointField, StaticIntPointField)
