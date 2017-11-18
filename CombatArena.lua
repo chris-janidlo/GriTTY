@@ -74,7 +74,9 @@ end
 
 Signal.register('tty_text_input', function(input)
 	-- this is in a mock state. needs a dedicated toy parser for complex commands with arguments and things like command;command
-	CombatArena.player:action(commands[input])
+	if commands[input] then
+		CombatArena.player:action(commands[input])
+	end
 end)
 
 return CombatArena
