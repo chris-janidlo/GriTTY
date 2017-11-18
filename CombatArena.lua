@@ -7,11 +7,11 @@ local CombatAgent = require 'CombatAgent'
 local GameObject = require 'GameObject'
 local commands = require 'BasePlayerCommands'
 
-local CombatState = {}
+local CombatArena = {}
 
-GameObject:Register(CombatState)
+GameObject:Register(CombatArena)
 
-function CombatState:load()
+function CombatArena:load()
 	self.center = Vector.new(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 	self.offset = MainFont:getHeight() -- height should always be greater than width, but we want a square, so use height as both height and width
 	
@@ -27,7 +27,7 @@ function CombatState:load()
 	self.agents:set(PointField(1,0), CombatEntity('p', PointField(1,0)))
 end
 
-function CombatState:drawEntityMap(map)
+function CombatArena:drawEntityMap(map)
 	for location,ent in map:iterator() do
 		-- we draw at ent.location instead of location because it's the most up to date location we have. otherwise there's a stutter
 		love.graphics.print(
@@ -38,14 +38,14 @@ function CombatState:drawEntityMap(map)
 	end
 end
 
-function CombatState:draw()
+function CombatArena:draw()
 	self:drawEntityMap(self.agents)
 	self:drawEntityMap(self.projectiles)
 	self:drawEntityMap(self.particles)
 end
 
 -- movement happens here
-function CombatState:updateEntityPositionsInMap(map)
+function CombatArena:updateEntityPositionsInMap(map)
 	stuffToSet = {}
 	for location,ent in map:iterator() do
 		-- use stuffToSet so that we don't modify the table while iterating over it
@@ -62,7 +62,7 @@ function CombatState:updateEntityPositionsInMap(map)
 	end
 end
 
-function CombatState:update(dt)
+function CombatArena:update(dt)
 	self:updateEntityPositionsInMap(self.agents)
 	self:updateEntityPositionsInMap(self.projectiles)
 	self:updateEntityPositionsInMap(self.particles)
@@ -70,7 +70,7 @@ end
 
 Signal.register('tty_text_input', function(input)
 	-- this is in a mock state. needs a dedicated toy parser for complex commands with arguments and things like command;command
-	CombatState.player:action(commands[input])
+	CombatArena.player:action(commands[input])
 end)
 
-return CombatState
+return CombatArena

@@ -2,7 +2,7 @@ local GameObject = require 'GameObject'
 local Signal = require 'hump.signal'
 local Terminal = require 'Terminal'
 local Timer = require 'hump.timer'
-local CombatState = require 'CombatState'
+local CombatArena = require 'CombatArena'
 
 function love.load()
 	MainFont = love.graphics.setNewFont('Monoid/Monoid-Regular.ttf')
