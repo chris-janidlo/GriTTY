@@ -1,18 +1,14 @@
-local Vector = require 'hump.vector'
 local Signal = require 'hump.signal'
 local PointField = require 'StaticIntPointField'
 local BidirectionalMap = require 'BidirectionalMap'
 local CombatEntity = require 'CombatEntity'
 local CombatAgent = require 'CombatAgent'
-local GameObject = require 'GameObject'
 local commands = require 'BasePlayerCommands'
 
 local CombatArena = {}
 
-GameObject:Register(CombatArena)
-
-function CombatArena:load()
-	self.center = Vector.new(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+function CombatArena:initialize(center)
+	self.center = center
 	self.offset = MainFont:getHeight() -- height should always be greater than width, but we want a square, so use height as both height and width
 	
 	-- maps for objects and entities

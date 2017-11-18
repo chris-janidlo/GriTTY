@@ -1,10 +1,7 @@
-local GameObject = require 'GameObject'
 local utf8 = require 'utf8'
 local Signal = require 'hump.signal'
 
 local Terminal = {}
-
-GameObject:Register(Terminal)
 
 -- returns the current input string split around the current cursor position
 -- if trim is true, it trims the left hand side by one character before returning
@@ -33,12 +30,12 @@ end
 
 -------------------------------- LOVE CALLBACKS --------------------------------
 
-function Terminal:load()
+function Terminal:initialize(position)
 	love.keyboard.setKeyRepeat(true)
 
 	-- position to print terminal line (including prompt)
-	self.x = 5
-	self.y = love.graphics.getHeight() - MainFont:getHeight() - 5
+	self.x = position.x
+	self.y = position.y - MainFont:getHeight()
 	
 	self.prompt = '> '
 	self.input = ''
@@ -77,3 +74,5 @@ function Terminal:draw()
 	love.graphics.print(self.prompt .. self.input, self.x, self.y)
 	love.graphics.print(self.cursor_char, self:cursor_pixel_position(), self.y)
 end
+
+return Terminal
