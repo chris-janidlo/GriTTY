@@ -8,7 +8,7 @@ GameObject:Register(Terminal)
 
 -- returns the current input string split around the current cursor position
 -- if trim is true, it trims the left hand side by one character before returning
-function Terminal.split_at_cursor(self, trim)
+function Terminal:split_at_cursor(trim)
 	if #self.input == 0 then return self.input, '' end
 	
 	-- get the utf8 offset so that we trim the *character* at cursor_pos, not the byte
@@ -33,7 +33,7 @@ end
 
 -------------------------------- LOVE CALLBACKS --------------------------------
 
-function Terminal.load(self)
+function Terminal:load()
 	love.keyboard.setKeyRepeat(true)
 
 	-- position to print terminal line (including prompt)
@@ -48,13 +48,13 @@ function Terminal.load(self)
 end
 
 -- basic text input
-function Terminal.textinput(self, key)
+function Terminal:textinput(key)
 	local l, r = self:split_at_cursor()
 	self.input = l .. key .. r
 end
 
 -- handles special key codes (ie backspace, return, arrow keys)
-function Terminal.keypressed(self, key)
+function Terminal:keypressed(key)
 	if key == "backspace" then
 		local l, r = self:split_at_cursor(true)
 		self.input = l .. r
@@ -73,7 +73,7 @@ function Terminal.keypressed(self, key)
 	end
 end
 
-function Terminal.draw(self)
+function Terminal:draw()
 	love.graphics.print(self.prompt .. self.input, self.x, self.y)
 	love.graphics.print(self.cursor_char, self:cursor_pixel_position(), self.y)
 end
