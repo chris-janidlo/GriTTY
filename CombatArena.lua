@@ -48,6 +48,12 @@ function CombatArena:draw()
 	self:drawEntityMap(self.particles)
 end
 
+function CombatArena:inBounds(location)
+	local bounds = (self.size - Vector(1,1)) / 2
+	print(bounds)
+	return math.abs(location.x) <= bounds.x and math.abs(location.y) <= bounds.y
+end
+
 -- movement happens here
 function CombatArena:updateEntityPositionsInMap(map)
 	stuffToSet = {}
@@ -56,11 +62,11 @@ function CombatArena:updateEntityPositionsInMap(map)
 		if ent.location ~= location then stuffToSet[ent.location] = ent end
 	end
 	for location,ent in pairs(stuffToSet) do
-		if not map:get(location) then
-			-- no collision; respect the location the entity is asking for
+		if self:inBounds(location) and not map:get(location) then
+			-- respect the location the entity is asking for
 			map:set(location, ent)
 		else
-			-- there's a collision; fix the entity's location but keep the map location the same
+			-- fix the entity's location but keep the map location the same
 			ent.location = map:get(ent)
 		end
 	end
