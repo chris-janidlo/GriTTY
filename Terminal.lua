@@ -22,10 +22,17 @@ function Terminal:split_at_cursor(trim)
 	return left, right
 end
 
-function Terminal.cursor_pixel_position(self)
-	local charwidth = MainFont:getWidth('C')
-	local base = self.x + MainFont:getWidth(self.prompt) + charwidth / 2
-	return base + charwidth * (#self.input + self.cursor_pos)
+-- promptY: y pixel value of the line of text where the prompt is printed
+function Terminal:cursor_pixel_position(promptY)
+	local positive_pos = #self.input + self.cursor_pos
+	local tmp = (positive_pos + #self.prompt)
+
+	local x, y = tmp % self.charsPerLine, math.floor(tmp / self.charsPerLine)
+
+	local charwidth = MainFont:getWidth(' ')
+	local base = self.x + charwidth / 2
+
+	return base + x * charwidth + 1, promptY + y * MainFont:getHeight() 
 end
 
 -------------------------------- LOVE CALLBACKS --------------------------------
@@ -42,6 +49,9 @@ function Terminal:initialize(position)
 	
 	self.cursor_char = '|'
 	self.cursor_pos = -1
+	
+	local alignLimit = love.graphics.getWidth() - self.x - MainFont:getWidth(' ') -- the space left for our terminal plus one character to look nice
+	self.charsPerLine = math.floor(alignLimit / MainFont:getWidth(' '))
 end
 
 -- basic text input
@@ -70,9 +80,35 @@ function Terminal:keypressed(key)
 	end
 end
 
+local function splitIntoEqualLines(text, length)
+	if not text then return {} end
+	local lines = {}
+	local current = 1
+	while current <= #text do
+		lines[#lines+1] = text:sub(current, current + length-1)
+		current = current + length
+	end
+	return lines
+end
+
+-- prints text in lines split by character with charLimit characters
+-- x is just a basic x coordinate, but bottomY is the top pixel of the bottom line of text (all lines are printed above that)
+-- returns the y coordinate of the top line of text so that this can be chained together (caller need to add space, however)
+local function printMultiLine(text, charLimit, x, bottomY)
+	local lines = splitIntoEqualLines(text, charLimit)
+	local topY = bottomY - (#lines-1) * MainFont:getHeight()
+	local curry = topY
+	for i,line in ipairs(lines) do
+		love.graphics.print(line, x, curry)
+		curry = curry + MainFont:getHeight()
+	end
+	return topY
+end
+
 function Terminal:draw()
-	love.graphics.print(self.prompt .. self.input, self.x, self.y)
-	love.graphics.print(self.cursor_char, self:cursor_pixel_position(), self.y)
+	-- promptY: y value of the line of text with the prompt
+	local promptY = printMultiLine(self.prompt..self.input, self.charsPerLine, self.x, self.y)
+	love.graphics.print(self.cursor_char, self:cursor_pixel_position(promptY))
 end
 
 return Terminal
