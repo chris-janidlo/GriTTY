@@ -25,9 +25,9 @@ function buffer:add(object)
 	end
 end
 
-function buffer:lookBackword(index)
-	assert(index >= 0, 'can\'t look negative backword')
-	return self.buffer[self.fin - (index or 0)]
+function buffer:lookBackward(index)
+	assert(index >= 0, 'can\'t look negative backward')
+	return self.buffer[self.fin - (index or 1)]
 end
 
 function buffer:iterator()
