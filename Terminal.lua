@@ -67,7 +67,7 @@ function Terminal:keypressed(key)
 		self.input = l .. r
 
 	elseif key == "return" then
-		Signal.emit('tty_text_input', self.input)
+		Signal.emit('tty_stdin', self.input)
 		self.input = ""
 		self.cursor_pos = -1
 

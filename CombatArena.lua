@@ -72,7 +72,7 @@ function CombatArena:update(dt)
 	self:updateEntityPositionsInMap(self.particles)
 end
 
-Signal.register('tty_text_input', function(input)
+Signal.register('tty_stdin', function(input)
 	-- this is in a mock state. needs a dedicated toy parser for complex commands with arguments and things like command;command
 	if commands[input] then
 		CombatArena.player:action(commands[input])

@@ -13,6 +13,6 @@ function love.update(dt)
 	Timer.update(dt)
 end
 
-Signal.register('tty_text_input', function (input)
+Signal.register('tty_stdin', function (input)
 	print(input)
 end)
