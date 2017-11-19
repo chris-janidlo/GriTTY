@@ -1,5 +1,6 @@
 local utf8 = require 'utf8'
 local Signal = require 'hump.signal'
+local ScrollbackBuffer = require 'ScrollbackBuffer'
 
 local Terminal = {}
 
@@ -35,8 +36,6 @@ function Terminal:cursor_pixel_position(promptY)
 	return base + x * charwidth + 1, promptY + y * MainFont:getHeight() 
 end
 
--------------------------------- LOVE CALLBACKS --------------------------------
-
 function Terminal:initialize(position)
 	love.keyboard.setKeyRepeat(true)
 
@@ -49,6 +48,8 @@ function Terminal:initialize(position)
 	
 	self.cursor_char = '|'
 	self.cursor_pos = -1
+
+	self.scrollback = ScrollbackBuffer(math.floor(love.graphics.getHeight() / MainFont:getHeight()))
 	
 	local alignLimit = love.graphics.getWidth() - self.x - MainFont:getWidth(' ') -- the space left for our terminal plus one character to look nice
 	self.charsPerLine = math.floor(alignLimit / MainFont:getWidth(' '))
@@ -106,9 +107,28 @@ local function printMultiLine(text, charLimit, x, bottomY)
 end
 
 function Terminal:draw()
+	-- current input
 	-- promptY: y value of the line of text with the prompt
 	local promptY = printMultiLine(self.prompt..self.input, self.charsPerLine, self.x, self.y)
+
+	-- previous output
+	local loopy = promptY - MainFont:getHeight()
+	for coloredtext in self.scrollback:iterator() do
+		love.graphics.setColor(coloredtext[2])
+		loopy = printMultiLine(coloredtext[1], self.charsPerLine, self.x, loopy) - MainFont:getHeight()
+	end
+	love.graphics.setColor(255,255,255,255)
+	
+	-- cursor
 	love.graphics.print(self.cursor_char, self:cursor_pixel_position(promptY))
 end
+
+Signal.register('tty_stdout', function(output)
+	Terminal.scrollback:add({output, {255, 255, 255}})
+end)
+
+Signal.register('tty_stderr', function(output)
+	Terminal.scrollback:add({output, {255, 0, 0}})
+end)
 
 return Terminal

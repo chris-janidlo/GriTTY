@@ -29,7 +29,7 @@ end
 ----- END DOCSTRING -----
 function CombatAgent:action(actionList, ...)
 	if self.acting then
-		Signal.emit('tty_bell', 'TODO: useful message here that might be used to distinguish uncancellable stuff and calls with bad arguments in the UI')
+		Signal.emit('tty_stderr', 'player agent is already executing an action')
 		return
 	end
 
