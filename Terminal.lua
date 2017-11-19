@@ -48,8 +48,10 @@ function Terminal:initialize(position)
 	
 	self.cursor_char = '|'
 	self.cursor_pos = -1
+	self.scrollback_pos = -1
 
-	self.scrollback = ScrollbackBuffer(math.floor(love.graphics.getHeight() / MainFont:getHeight()))
+	self.scrollback_out = ScrollbackBuffer(math.floor(love.graphics.getHeight() / MainFont:getHeight()))
+	self.scrollback_in = ScrollbackBuffer(self.scrollback_out.capacity)
 	
 	local alignLimit = love.graphics.getWidth() - self.x - MainFont:getWidth(' ') -- the space left for our terminal plus one character to look nice
 	self.charsPerLine = math.floor(alignLimit / MainFont:getWidth(' '))
@@ -69,8 +71,10 @@ function Terminal:keypressed(key)
 
 	elseif key == "return" then
 		Signal.emit('tty_stdin', self.input)
+		self.scrollback_in:add(self.input)
 		self.input = ""
 		self.cursor_pos = -1
+		self.scrollback_pos = -1
 
 	elseif key == "left" then
 		-- cursor can, at most, be one to the left of the current input (when we want to insert at the beginning)
@@ -78,6 +82,21 @@ function Terminal:keypressed(key)
 
 	elseif key == "right" then
 		self.cursor_pos = math.min(self.cursor_pos + 1, -1)
+	
+	elseif key == "up" then
+		self.scrollback_pos = math.min(self.scrollback_pos + 1, self.scrollback_in.fin - 1)
+		self.input = self.scrollback_in:lookBackward(self.scrollback_pos)
+		self.cursor_pos = -1
+
+	elseif key == "down" then
+		self.scrollback_pos = math.max(self.scrollback_pos - 1, -1)
+		if self.scrollback_pos == -1 then
+			self.input = ""
+		else
+			self.input = self.scrollback_in:lookBackward(self.scrollback_pos)
+		end
+		self.cursor_pos = -1
+
 	end
 end
 
@@ -113,7 +132,7 @@ function Terminal:draw()
 
 	-- previous output
 	local loopy = promptY - MainFont:getHeight()
-	for coloredtext in self.scrollback:iterator() do
+	for coloredtext in self.scrollback_out:iterator() do
 		love.graphics.setColor(coloredtext[2])
 		loopy = printMultiLine(coloredtext[1], self.charsPerLine, self.x, loopy) - MainFont:getHeight()
 	end
@@ -124,11 +143,11 @@ function Terminal:draw()
 end
 
 Signal.register('tty_stdout', function(output)
-	Terminal.scrollback:add({output, {255, 255, 255}})
+	Terminal.scrollback_out:add({output, {255, 255, 255}})
 end)
 
 Signal.register('tty_stderr', function(output)
-	Terminal.scrollback:add({output, {255, 0, 0}})
+	Terminal.scrollback_out:add({output, {255, 0, 0}})
 end)
 
 return Terminal
