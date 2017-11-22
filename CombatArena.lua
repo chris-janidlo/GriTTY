@@ -49,7 +49,6 @@ end
 
 function CombatArena:inBounds(location)
 	local bounds = (self.size - Vector(1,1)) / 2
-	print(bounds)
 	return math.abs(location.x) <= bounds.x and math.abs(location.y) <= bounds.y
 end
 
