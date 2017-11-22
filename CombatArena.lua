@@ -4,7 +4,6 @@ local BidirectionalMap = require 'BidirectionalMap'
 local CombatEntity = require 'CombatEntity'
 local CombatAgent = require 'CombatAgent'
 local Vector = require 'hump.vector'
-local commands = require 'BasePlayerCommands'
 
 local CombatArena = {}
 
@@ -24,9 +23,9 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 	self.projectiles = BidirectionalMap() -- things that interact on collision with entities (bullets, sword lines)
 	self.particles = BidirectionalMap() -- purely visual effects go here
 	
-	self.player = CombatAgent('o', PointField(0,0))
+	Player = CombatAgent('o', PointField(0,0))
 
-	self.agents:set(PointField(0,0), self.player)
+	self.agents:set(PointField(0,0), Player)
 	self.agents:set(PointField(1,0), CombatEntity('p', PointField(1,0)))
 end
 
@@ -77,14 +76,5 @@ function CombatArena:update(dt)
 	self:updateEntityPositionsInMap(self.projectiles)
 	self:updateEntityPositionsInMap(self.particles)
 end
-
-Signal.register('tty_stdin', function(input)
-	-- this is in a mock state. needs a dedicated toy parser for complex commands with arguments and things like command;command
-	if commands[input] then
-		Signal.emit('tty_stdout', 'executing action \''..input..'\'...')
-		CombatArena.player:action(commands[input])
-	else Signal.emit('tty_stderr', 'command \''..input..'\' not recognized')
-	end
-end)
 
 return CombatArena

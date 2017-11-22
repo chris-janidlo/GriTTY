@@ -2,6 +2,7 @@
 
 local Terminal = require 'Terminal'
 local CombatArena = require 'CombatArena'
+local CommandExec = require 'PlayerCommandExecution'
 local Vector = require 'hump.vector'
 
 local CombatState = {}
