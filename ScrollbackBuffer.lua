@@ -1,3 +1,4 @@
+-- TODO: reimplement as a Deque.Queue
 local Class = require 'hump.class'
 
 local buffer = Class{}
