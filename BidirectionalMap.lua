@@ -46,4 +46,11 @@ function BidirectionalMap:__tostring()
 	return out..' ]>'
 end
 
+function BidirectionalMap:callAll(name, ...)
+	for k,v in self:iterator() do
+		if k[name] then k[name](k, ...) end
+		if v[name] then v[name](v, ...) end
+	end
+end
+
 return BidirectionalMap

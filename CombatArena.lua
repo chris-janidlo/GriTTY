@@ -2,7 +2,7 @@ local Signal = require 'hump.signal'
 local PointField = require 'StaticIntPointField'
 local BidirectionalMap = require 'BidirectionalMap'
 local CombatEntity = require 'CombatEntity'
-local CombatAgent = require 'CombatAgent'
+local PlayerEntity = require 'PlayerEntity'
 local Vector = require 'hump.vector'
 
 local CombatArena = {}
@@ -23,7 +23,7 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 	self.projectiles = BidirectionalMap() -- things that interact on collision with entities (bullets, sword lines)
 	self.particles = BidirectionalMap() -- purely visual effects go here
 	
-	Player = CombatAgent('o', PointField(0,0))
+	Player = PlayerEntity('o', PointField(0,0))
 
 	self.agents:set(PointField(0,0), Player)
 	self.agents:set(PointField(1,0), CombatEntity('p', PointField(1,0)))
@@ -74,6 +74,7 @@ function CombatArena:update(dt)
 	self:updateEntityPositionsInMap(self.agents)
 	self:updateEntityPositionsInMap(self.projectiles)
 	self:updateEntityPositionsInMap(self.particles)
+	self.agents:callAll('update', dt)
 end
 
 return CombatArena
