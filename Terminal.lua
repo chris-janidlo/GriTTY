@@ -1,6 +1,6 @@
 local utf8 = require 'utf8'
 local Signal = require 'hump.signal'
-local ScrollbackBuffer = require 'ScrollbackBuffer'
+local ScrollbackBuffer = require 'DataStructures.ScrollbackBuffer'
 
 local Terminal = {}
 

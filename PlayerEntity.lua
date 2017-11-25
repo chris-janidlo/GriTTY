@@ -2,7 +2,7 @@ local Class = require 'hump.class'
 local Timer = require 'hump.timer'
 local Signal = require 'hump.signal'
 local CombatEntity = require 'CombatEntity'
-local Deque = require 'Deque'
+local Deque = require 'DataStructures.Deque'
 
 local PlayerEntity = Class{__includes = CombatEntity}
 

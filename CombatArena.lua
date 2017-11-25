@@ -1,6 +1,6 @@
 local Signal = require 'hump.signal'
-local PointField = require 'StaticIntPointField'
-local BidirectionalMap = require 'BidirectionalMap'
+local PointField = require 'DataStructures.StaticIntPointField'
+local BidirectionalMap = require 'DataStructures.BidirectionalMap'
 local CombatEntity = require 'CombatEntity'
 local PlayerEntity = require 'PlayerEntity'
 local Vector = require 'hump.vector'

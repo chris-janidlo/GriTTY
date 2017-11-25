@@ -2,7 +2,7 @@
 -- TODO: add math ops here to replace weird manual casting
 -- TODO: bounds checking here?
 -- TODO: maybe add a function to return a zoomed in view?
-local IntPoint = require 'IntPoint'
+local IntPoint = require 'DataStructures.IntPoint'
 
 local StaticIntPointField = {__call = function(self, x, y) return self[x][y] end}
 

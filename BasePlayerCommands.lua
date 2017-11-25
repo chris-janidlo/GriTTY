@@ -1,4 +1,4 @@
-local PointField = require 'StaticIntPointField'
+local PointField = require 'DataStructures.StaticIntPointField'
 
 local cmds = {}
 
