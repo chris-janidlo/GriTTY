@@ -1,29 +1,18 @@
 local PointField = require 'DataStructures.StaticIntPointField'
 
-local cmds = {}
-
--- expansions
-cmds._e = {
-	-- wasd
-	w = PointField(0, -1),
-	a = PointField(-1, 0),
-	s = PointField(0, 1),
-	d = PointField(1, 0)
-}
-
-function cmds.addToPlayerPos(player, point)
+local function addToPlayerPos(player, point)
 	newPoint = player.location + point
 	player.location = PointField(newPoint.x, newPoint.y)
 end
 
-function cmds.move(point)
+local function move(point)
 	return {
 		{
 			function(player) player:setColor(255,0,0) end,
 			.15
 		},
 		{
-			function(player) cmds.addToPlayerPos(player, point) end,
+			function(player) addToPlayerPos(player, point) end,
 			.2
 		},
 		{
@@ -33,18 +22,18 @@ function cmds.move(point)
 	}
 end
 
-function cmds.dodge(direction)
+local function dodge(direction)
 	return {
 		{
 			function(player) player:setColor(255,0,0) end,
 			.15
 		},
 		{
-			function(player) player.invuln = true; player:setIndicator('.'); cmds.addToPlayerPos(player, direction*2) end,
+			function(player) player.invuln = true; player:setIndicator('.'); addToPlayerPos(player, direction*2) end,
 			.25
 		},
 		{
-			function(player) cmds.addToPlayerPos(player, direction); player:resetIndicator() end,
+			function(player) addToPlayerPos(player, direction); player:resetIndicator() end,
 			.5
 		},
 		{
@@ -54,14 +43,25 @@ function cmds.dodge(direction)
 	}
 end
 
-cmds.w = cmds.move(cmds._e.w)
-cmds.a = cmds.move(cmds._e.a)
-cmds.s = cmds.move(cmds._e.s)
-cmds.d = cmds.move(cmds._e.d)
+-- expansions
+local e = {
+	-- wasd
+	w = PointField(0, -1),
+	a = PointField(-1, 0),
+	s = PointField(0, 1),
+	d = PointField(1, 0)
+}
 
-cmds.ww = cmds.dodge(cmds._e.w)
-cmds.aa = cmds.dodge(cmds._e.a)
-cmds.ss = cmds.dodge(cmds._e.s)
-cmds.dd = cmds.dodge(cmds._e.d)
+local cmds = {}
+
+cmds.w = move(e.w)
+cmds.a = move(e.a)
+cmds.s = move(e.s)
+cmds.d = move(e.d)
+
+cmds.ww = dodge(e.w)
+cmds.aa = dodge(e.a)
+cmds.ss = dodge(e.s)
+cmds.dd = dodge(e.d)
 
 return cmds
