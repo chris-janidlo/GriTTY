@@ -25,8 +25,20 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 	
 	Player = PlayerEntity('o', PointField(0,0))
 
-	self.agents:set(PointField(0,0), Player)
-	self.agents:set(PointField(1,0), CombatEntity('p', PointField(1,0)))
+	self:Spawn(Player, PointField(0,0), 'agents')
+end
+
+-- entityMap is a string that must be set to one of 'agents', 'projectiles', or 'particles'
+function CombatArena:Spawn(entity, location, entityMap)
+	assert(type(entityMap) == 'string', 'entityMap must be a string')
+	assert(
+		entityMap == 'agents' or entityMap == 'projectiles' or entityMap == 'particles',
+		'given string "'..entityMap..'" is not a valid entity map'
+	)
+	local map = self[entityMap]
+	if not map:get(entity) and not map:get(location) then
+		map:set(location, entity)
+	end
 end
 
 function CombatArena:drawEntityMap(map)
