@@ -1,5 +1,4 @@
 local Class = require 'hump.class'
-local Timer = require 'hump.timer'
 local Signal = require 'hump.signal'
 local CombatEntity = require 'CombatEntity'
 local Deque = require 'DataStructures.Deque'
