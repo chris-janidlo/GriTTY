@@ -53,15 +53,37 @@ end
 -- chooses a single child to evaluate based on a function and an enumeration of that function's return values
 -- named table as argument, with values:
 	-- query: function. the return value of this is used to determine which option to use. 
-	-- options: indexed with the return value of query. whatever returns is then evaluated. assumes that there will always be an option for every possible return of query
+	-- options: table. if query returns a key that is in this table, the associated value is evaluated, and that is returned. otherwise, options[self.defaultString] is evaluated
+	-- defaultString: optional string. if present, changes where to look if query returns a value that is not a key in options. by default, this is set to 'base'
+-- example:
+--	node = CT.Select {
+--		query = function(value) return value * 10 end,
+--		options = {
+--			[10] = 'hello',
+--			[20] = 'world',
+--			[50] = 50,
+--			base = 'this is the default option'
+--		}
+--	}
+-- with a non-default default:
+--	node2 = CT.Select {
+--		query = function() end,
+--		defaultString = 'default',
+--		options = {
+--			base = 'this will never be returned',
+--			default = 'this will always be returned'
+--		}
+--	}
 CT.Select = function(table)
 	return {
 		type = 'choose',
 		query = table.query,
 		options = table.options,
+		defaultString = table.defaultString or 'base',
 		evaluate = function(self, ...)
 			debugPrint(self)
-			return self.options[self.query(...)] :evaluate(...)
+			local node = self.options[self.query(...)] or self.options[self.defaultString]
+			return node:evaluate(...)
 		end
 	}
 end
