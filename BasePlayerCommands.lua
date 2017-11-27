@@ -3,7 +3,7 @@ local PointField = require 'DataStructures.StaticIntPointField'
 local function move(point)
 	return {
 		{
-			function(player) player:setColor(255,0,0) end,
+			function(player) player:setColor(player.actingColor) end,
 			.15
 		},
 		{
@@ -20,7 +20,7 @@ end
 local function dodge(direction)
 	return {
 		{
-			function(player) player:setColor(255,0,0) end,
+			function(player) player:setColor(player.actingColor) end,
 			.15
 		},
 		{
