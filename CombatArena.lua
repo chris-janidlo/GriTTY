@@ -4,6 +4,7 @@ local BidirectionalMap = require 'DataStructures.BidirectionalMap'
 local CombatEntity = require 'CombatEntity'
 local PlayerEntity = require 'PlayerEntity'
 local Vector = require 'hump.vector'
+local rudy = require 'Enemies.RudeDude'
 
 local CombatArena = {}
 
@@ -29,6 +30,7 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 end
 
 -- entityMap is a string that must be set to one of 'agents', 'projectiles', or 'particles'
+-- returns true if successful, false if not (entity/location already exists)
 function CombatArena:Spawn(entity, entityMap)
 	assert(type(entityMap) == 'string', 'entityMap must be a string')
 	assert(
@@ -38,7 +40,9 @@ function CombatArena:Spawn(entity, entityMap)
 	local map = self[entityMap]
 	if not map:get(entity) and not map:get(entity.location) then
 		map:set(entity.location, entity)
+		return true
 	end
+	return false
 end
 
 function CombatArena:drawEntityMap(map)
@@ -74,6 +78,7 @@ function CombatArena:updateEntityPositionsInMap(map)
 	for location,ent in pairs(stuffToSet) do
 		if self:inBounds(location) and not map:get(location) then
 			-- respect the location the entity is asking for
+			print(map:get(location))
 			map:set(location, ent)
 		else
 			-- fix the entity's location but keep the map location the same
