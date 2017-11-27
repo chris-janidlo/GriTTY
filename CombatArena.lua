@@ -18,26 +18,26 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 	self.center = self.rectLocation + self.rectDimensions / 2
 	
 	-- maps for objects and entities
-	-- only ever set in point-entity order
+	-- don't set directly; use self:spawn
 	self.agents = BidirectionalMap() -- moving agents (player, enemies)
 	self.projectiles = BidirectionalMap() -- things that interact on collision with entities (bullets, sword lines)
 	self.particles = BidirectionalMap() -- purely visual effects go here
 	
 	Player = PlayerEntity('o', PointField(0,0))
 
-	self:Spawn(Player, PointField(0,0), 'agents')
+	self:Spawn(Player, 'agents')
 end
 
 -- entityMap is a string that must be set to one of 'agents', 'projectiles', or 'particles'
-function CombatArena:Spawn(entity, location, entityMap)
+function CombatArena:Spawn(entity, entityMap)
 	assert(type(entityMap) == 'string', 'entityMap must be a string')
 	assert(
 		entityMap == 'agents' or entityMap == 'projectiles' or entityMap == 'particles',
 		'given string "'..entityMap..'" is not a valid entity map'
 	)
 	local map = self[entityMap]
-	if not map:get(entity) and not map:get(location) then
-		map:set(location, entity)
+	if not map:get(entity) and not map:get(entity.location) then
+		map:set(entity.location, entity)
 	end
 end
 
