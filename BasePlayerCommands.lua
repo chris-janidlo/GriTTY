@@ -1,10 +1,5 @@
 local PointField = require 'DataStructures.StaticIntPointField'
 
-local function addToPlayerPos(player, point)
-	newPoint = player.location + point
-	player.location = PointField(newPoint.x, newPoint.y)
-end
-
 local function move(point)
 	return {
 		{
@@ -12,7 +7,7 @@ local function move(point)
 			.15
 		},
 		{
-			function(player) addToPlayerPos(player, point) end,
+			function(player) player.location = player.location + point end,
 			.2
 		},
 		{
@@ -29,11 +24,11 @@ local function dodge(direction)
 			.15
 		},
 		{
-			function(player) player.invuln = true; player:setIndicator('.'); addToPlayerPos(player, direction*2) end,
+			function(player) player.invuln = true; player:setIndicator('.'); player.location = player.location + direction*2 end,
 			.25
 		},
 		{
-			function(player) addToPlayerPos(player, direction); player:resetIndicator() end,
+			function(player) player.location = player.location + direction; player:resetIndicator() end,
 			.5
 		},
 		{
