@@ -19,7 +19,7 @@ function PlayerEntity:update(dt)
 	if self.actionQueue.size > 0 and not self.acting then
 		local item = self.actionQueue:pop()
 		Signal.emit('tty_stdout', 'executing action \''..item.name..'\'...')		
-		self:action(item.action, unpack(item.args or {}))
+		self:action(item.actions, unpack(item.args or {}))
 	end
 end
 

@@ -41,9 +41,12 @@ Signal.register('tty_stdin', function(input)
 	for i,richCommand in ipairs(richInput) do
 		if richCommand.command then
 			if commands[richCommand.command] then
-				Player.actionQueue:push({name = richCommand.command, action = commands[richCommand.command], args = richCommand.args})
+				Player.actionQueue:push({name = richCommand.command, actions = commands[richCommand.command], args = richCommand.args})
 			else
-				Signal.emit('tty_stderr', 'command \''..richCommand.command..'\' not recognized')
+				Player.actionQueue:push({
+					name = richCommand.command,
+					actions = { {function() Signal.emit('tty_stderr', 'command \''..richCommand.command..'\' not recognized') end, 0} }
+				})
 			end
 		end
 	end
