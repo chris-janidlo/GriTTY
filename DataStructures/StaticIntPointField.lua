@@ -1,6 +1,5 @@
--- view of IntPoint that guarantees, after a require, equality between any point calls
+-- immutable vector of integers, such that any two calls of the same values will return the same table
 -- TODO: maybe add a function to return a zoomed in view?
-local IntPoint = require 'DataStructures.IntPoint'
 
 local StaticIntPointField = {}
 
@@ -10,42 +9,61 @@ StaticIntPointField.lower, StaticIntPointField.upper = -128, 128
 for x = StaticIntPointField.lower,StaticIntPointField.upper do
 	StaticIntPointField[x] = {}
 	for y = StaticIntPointField.lower,StaticIntPointField.upper do
-		StaticIntPointField[x][y] = IntPoint(x, y)
+		StaticIntPointField[x][y] = setmetatable({x=x, y=y}, StaticIntPointField)
 	end
 end
 
+local function isInt(number)
+	return type(number) == 'number' and number==math.floor(number)
+end
+
+local function isVector(point)
+	return type(point) == 'table' and type(point.x) == 'number' and type(point.y) == 'number'
+end
+
+function StaticIntPointField:assertions(fieldName, val)
+	-- integer check
+	assert(isInt(val), fieldName..' value '..val..' is not an integer')
+	-- bounds check
+	assert(val >= self.lower and val <= self.upper,
+		fieldName..' value '..val..' is out of bounds ('..self.lower..', '..self.upper..')')
+end
+
 function StaticIntPointField:__call(x, y)
-	assert(x >= self.lower and x <= self.upper,
-			'x value '..x..' is out of bounds ('..self.lower..', '..self.upper..')')
-	assert(y >= self.lower and y <= self.upper,
-			'y value '..y..' is out of bounds ('..self.lower..', '..self.upper..')')
+	self:assertions('x', x)
+	self:assertions('y', y)
 	return self[x][y]
 end
 
-function StaticIntPointField.staticizePoint(point)
-	return StaticIntPointField(point.x, point.y)
-end
-
 ---------- MATH OPS ----------
--- these all just use IntPoint's operations, then index back on the field
 function StaticIntPointField.__unm(point)
-	return StaticIntPointField.staticizePoint(-point)
+	return StaticIntPointField(-point.x, -point.y)
 end
 
-function StaticIntPointField.__add(a, b)
-	return StaticIntPointField.staticizePoint(a + b)
+function StaticIntPointField.__add(lhs, rhs)
+	assert(isVector(lhs) and isVector(rhs), 'can only add IntPoints to other IntPoints')
+	return StaticIntPointField(lhs.x + rhs.x, lhs.y + rhs.y)
 end
 
-function StaticIntPointField.__sub(a, b)
-	return StaticIntPointField.staticizePoint(a - b)
+function StaticIntPointField.__sub(lhs, rhs)
+	assert(isVector(lhs) and isVector(rhs), 'can only sub IntPoints from other IntPoints')
+	return lhs + -rhs
 end
 
-function StaticIntPointField.__mul(a, b)
-	return StaticIntPointField.staticizePoint(a * b)
+function StaticIntPointField.__mul(lhs, rhs)
+	if isInt(lhs) then
+		return StaticIntPointField(lhs * rhs.x, lhs * rhs.y)
+	elseif isInt(rhs) then
+		return StaticIntPointField(rhs * lhs.x, rhs * lhs.y)
+	else
+		assert(isVector(lhs) and isVector(rhs), "can only multiply IntPoints with numbers or each other")
+		return (lhs.x * rhs.x) + (lhs.y * rhs.y)
+	end
 end
 
-function StaticIntPointField.__div(a, b)
-	return StaticIntPointField.staticizePoint(a / b)
+function StaticIntPointField.__div(lhs, rhs)
+	assert(isVector(lhs) and isInt(rhs), "can only divide IntPoints by numbers")
+	return StaticIntPointField(lhs.x / rhs, lhs.y / rhs)
 end
 
 return setmetatable(StaticIntPointField, StaticIntPointField)

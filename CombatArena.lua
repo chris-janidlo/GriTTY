@@ -80,7 +80,6 @@ function CombatArena:updateEntityPositionsInMap(map)
 	for location,ent in pairs(stuffToSet) do
 		if self:inBounds(location) and not map:get(location) then
 			-- respect the location the entity is asking for
-			print(map:get(location))
 			map:set(location, ent)
 		else
 			-- fix the entity's location but keep the map location the same
