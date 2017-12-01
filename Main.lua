@@ -2,6 +2,7 @@ local Gamestate = require 'hump.gamestate'
 local Signal = require 'hump.signal'
 local Timer = require 'hump.timer'
 local CombatState = require 'CombatState'
+local Pause = require 'Pause'
 
 local function roundToNearest(value, rounder)
 	return math.floor(value / rounder) * rounder
@@ -17,6 +18,12 @@ end
 
 function love.update(dt)
 	Timer.update(dt)
+end
+
+function love.keypressed(key, scancode, isrepeat)
+	if Gamestate.current() ~= Pause and key == 'escape' then
+		Gamestate.push(Pause)
+	end
 end
 
 Signal.register('tty_stdin', function (input)
