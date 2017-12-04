@@ -2,10 +2,11 @@ local Class = require 'hump.class'
 local Signal = require 'hump.signal'
 local CombatEntity = require 'CombatEntity'
 local Deque = require 'DataStructures.Deque'
+local ColorDefinitions = require 'ColorDefinitions'
 
 local PlayerEntity = Class{
 	__includes = CombatEntity,
-	actingColor = {170, 170, 255}
+	actingColor = ColorDefinitions.playerActing;
 }
 
 function PlayerEntity:init(indicator, location)
