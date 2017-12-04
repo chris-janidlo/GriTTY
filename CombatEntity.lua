@@ -59,16 +59,13 @@ end
 -- for every pair, the action is called and passed self (the identity of the calling entity) and any additional arguments that were given to the outer 'action' function. then, the script waits for the associated time before continuing to the next action.
 -- assumes that actionList is properly formatted and does NO ERROR HANDLING except to check if this entity is already in the middle of an action.
 ----- END DOCSTRING -----
-function CombatEntity:action(actionList, ...)
+function CombatEntity:action(actionFun, ...)
 	if self.acting then return end
 
 	self.acting = true
 	args = {...}
 	Timer.script(function(wait)
-		for i, action in ipairs(actionList) do
-			action[1](self, unpack(args)) -- unfortunately, can't pass ... without this silly workaround
-			wait(action[2])
-		end
+		actionFun(wait, self, unpack(args)) -- unfortunately, can't pass ... without this silly workaround
 		self.acting = false -- have to set this inside the coroutine in order to be accurate
 	end)
 end

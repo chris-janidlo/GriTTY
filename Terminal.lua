@@ -1,6 +1,7 @@
 local utf8 = require 'utf8'
 local Signal = require 'hump.signal'
 local ScrollbackBuffer = require 'DataStructures.ScrollbackBuffer'
+require 'CommandProcessor'
 
 local Terminal = {}
 
@@ -36,13 +37,14 @@ function Terminal:cursor_pixel_position(promptY)
 	return base + x * charwidth + 1, promptY + y * MainFont:getHeight() 
 end
 
-function Terminal:initialize(position)
+function Terminal:initialize(position, echo)
 	love.keyboard.setKeyRepeat(true)
 
 	-- position to print terminal line (including prompt)
 	self.x = position.x
 	self.y = position.y - MainFont:getHeight()
 	
+	self.echo = echo
 	self.prompt = '> '
 	self.input = ''
 	
@@ -141,6 +143,12 @@ function Terminal:draw()
 	-- cursor
 	love.graphics.print(self.cursor_char, self:cursor_pixel_position(promptY))
 end
+
+Signal.register('tty_stdin', function(input)
+	if (Terminal.echo) then
+		Terminal.scrollback_out:add({Terminal.prompt..input, {255, 255, 255}})
+	end
+end)
 
 Signal.register('tty_stdout', function(output)
 	Terminal.scrollback_out:add({output, {255, 255, 255}})

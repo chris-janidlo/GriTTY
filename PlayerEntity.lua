@@ -22,9 +22,13 @@ end
 function PlayerEntity:update(dt)
 	if self.actionQueue.size > 0 and not self.acting then
 		local item = self.actionQueue:pop()
-		Signal.emit('tty_stdout', 'executing action \''..item.name..'\'...')		
-		self:action(item.actions, unpack(item.args or {}))
+		Signal.emit('tty_stdout', 'executing action \''..item.cmd.name..'\'...')		
+		self:action(item.cmd.actionFun, unpack(item.args or {}))
 	end
+end
+
+function PlayerEntity:pushAction(cmd, args)
+	self.actionQueue:push({cmd=cmd, args=args})
 end
 
 return PlayerEntity

@@ -28,7 +28,7 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 
 	self:Spawn(Player, 'agents')
 
-	self:Spawn(rudy(), 'agents')
+	-- self:Spawn(rudy(), 'agents')
 end
 
 -- entityMap is a string that must be set to one of 'agents', 'projectiles', or 'particles'

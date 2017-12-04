@@ -1,5 +1,5 @@
 local Signal = require 'hump.signal'
-local commands = require 'BasePlayerCommands'
+local commands = require 'BaseCommands'
 
 -- takes a string of bash-kinda commands (that is, commands with space-separated argument lists, which one level up are separated by colons)
 -- returns array of tables, each with following format:
@@ -31,8 +31,8 @@ end
 
 Signal.register('tty_stdin', function(input)
 	if #input == 0 then return end
-	if Player.acting then
-		Signal.emit('tty_stderr', 'player agent is already executing an action')
+	if Player and Player.acting then
+		Signal.emit('tty_stderr', 'user device is occupied!')
 		return
 	end
 
@@ -40,13 +40,19 @@ Signal.register('tty_stdin', function(input)
 	
 	for i,richCommand in ipairs(richInput) do
 		if richCommand.command then
-			if commands[richCommand.command] then
-				Player.actionQueue:push({name = richCommand.command, actions = commands[richCommand.command], args = richCommand.args})
+			local cmdObject = commands[richCommand.command]
+			if cmdObject then
+				if cmdObject.isPlayer then
+					if Player then
+						Player:pushAction(cmdObject, richCommand.args)
+					else
+						Signal.emit('tty_stderr', 'user device not initializaed')
+					end
+				else
+					cmdObject.actionFun(richCommand.args)
+				end
 			else
-				Player.actionQueue:push({
-					name = richCommand.command,
-					actions = { {function() Signal.emit('tty_stderr', 'command \''..richCommand.command..'\' not recognized') end, 0} }
-				})
+				Signal.emit('tty_stderr', 'command \''..richCommand.command..'\' not recognized')
 			end
 		end
 	end
