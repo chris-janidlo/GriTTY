@@ -9,7 +9,7 @@ local CombatState = {}
 function CombatState:enter(previous)
 	CombatArena:initialize(16, 16)
 
-	Terminal:initialize(Vector(
+	self.t = Terminal(Vector(
 		CombatArena.rectLocation.x + CombatArena.rectDimensions.x + MainFont:getWidth(' '),
 		love.graphics.getHeight() - MainFont:getHeight()
 	))
@@ -17,19 +17,21 @@ end
 
 function CombatState:update(dt)
 	CombatArena:update(dt)
+	local v = self.t:popInput()
+	if v then print(v) end
 end
 
 function CombatState:draw()
-	Terminal:draw()
+	self.t:draw()
 	CombatArena:draw()
 end
 
 function CombatState:textinput(key)
-	Terminal:textinput(key)
+	self.t:textinput(key)
 end
 
 function CombatState:keypressed(key)
-	Terminal:keypressed(key)
+	self.t:keypressed(key)
 end
 
 return CombatState

@@ -1,13 +1,19 @@
 local utf8 = require 'utf8'
-local Signal = require 'hump.signal'
+local Class = require 'hump.class'
 local ScrollbackBuffer = require 'DataStructures.ScrollbackBuffer'
+local Deque = require 'DataStructures.Deque'
 require 'CommandProcessor'
 
-local Terminal = {}
+local Terminal = Class{}
+
+----------------------------------------------------------------------------
+---------------------------- HELPER FUNCTIONS ------------------------------
+----------------------------------------------------------------------------
+-- don't call these externally
 
 -- returns the current input string split around the current cursor position
 -- if trim is true, it trims the left hand side by one character before returning
-function Terminal:split_at_cursor(trim)
+function Terminal:_split_at_cursor(trim)
 	if #self.input == 0 then return self.input, '' end
 	
 	-- get the utf8 offset so that we trim the *character* at cursor_pos, not the byte
@@ -25,7 +31,7 @@ function Terminal:split_at_cursor(trim)
 end
 
 -- promptY: y pixel value of the line of text where the prompt is printed
-function Terminal:cursor_pixel_position(promptY)
+function Terminal:_cursor_pixel_position(promptY)
 	local positive_pos = #self.input + self.cursor_pos
 	local tmp = (positive_pos + #self.prompt)
 
@@ -37,7 +43,36 @@ function Terminal:cursor_pixel_position(promptY)
 	return base + x * charwidth + 1, promptY + y * MainFont:getHeight() 
 end
 
-function Terminal:initialize(position, echo)
+local function splitIntoEqualLines(text, length)
+	if not text then return {} end
+	local lines = {}
+	local current = 1
+	while current <= #text do
+		lines[#lines+1] = text:sub(current, current + length-1)
+		current = current + length
+	end
+	return lines
+end
+
+-- prints text in lines split by character with charLimit characters
+-- x is just a basic x coordinate, but bottomY is the top pixel of the bottom line of text (all lines are printed above that)
+-- returns the y coordinate of the top line of text so that this can be chained together (caller need to add space, however)
+local function printMultiLine(text, charLimit, x, bottomY)
+	local lines = splitIntoEqualLines(text, charLimit)
+	local topY = bottomY - (#lines-1) * MainFont:getHeight()
+	local curry = topY
+	for i,line in ipairs(lines) do
+		love.graphics.print(line, x, curry)
+		curry = curry + MainFont:getHeight()
+	end
+	return topY
+end
+
+-----------------------------------------------------------------------------------
+---------------------------- INTERFACE FUNCTIONALITY ------------------------------
+-----------------------------------------------------------------------------------
+
+function Terminal:init(position, echo)
 	love.keyboard.setKeyRepeat(true)
 
 	-- position to print terminal line (including prompt)
@@ -54,26 +89,49 @@ function Terminal:initialize(position, echo)
 
 	self.scrollback_out = ScrollbackBuffer(math.floor(love.graphics.getHeight() / MainFont:getHeight()))
 	self.scrollback_in = ScrollbackBuffer(self.scrollback_out.capacity)
+	self.input_queue = Deque.Queue()
 	
 	local alignLimit = love.graphics.getWidth() - self.x - MainFont:getWidth(' ') -- the space left for our terminal plus one character to look nice
 	self.charsPerLine = math.floor(alignLimit / MainFont:getWidth(' '))
 end
 
+-- pop input to be processed externally
+function Terminal:popInput()
+	return self.input_queue:pop()
+end
+
+-- add text as a new entry in this this terminal's output scrollback
+-- TODO: give this the same signature as love.graphics.print
+function Terminal:print(text, isError)
+	if isError then 
+		Terminal.scrollback_out:add({text, {255, 0, 0}})
+	else
+		Terminal.scrollback_out:add({text, {255, 255, 255}})
+	end
+end
+
+--------------------------------------------------------------------------
+---------------------------- LOVE CALLBACKS ------------------------------
+--------------------------------------------------------------------------
+
 -- basic text input
 function Terminal:textinput(key)
-	local l, r = self:split_at_cursor()
+	local l, r = self:_split_at_cursor()
 	self.input = l .. key .. r
 end
 
 -- handles special key codes (ie backspace, return, arrow keys)
 function Terminal:keypressed(key)
 	if key == "backspace" then
-		local l, r = self:split_at_cursor(true)
+		local l, r = self:_split_at_cursor(true)
 		self.input = l .. r
 
 	elseif key == "return" then
-		Signal.emit('tty_stdin', self.input)
+		self.input_queue:push(self.input)
 		self.scrollback_in:add(self.input)
+		if (self.echo) then
+			self.scrollback_out:add({Terminal.prompt..input, {255, 255, 255}})
+		end
 		self.input = ""
 		self.cursor_pos = -1
 		self.scrollback_pos = -1
@@ -102,31 +160,6 @@ function Terminal:keypressed(key)
 	end
 end
 
-local function splitIntoEqualLines(text, length)
-	if not text then return {} end
-	local lines = {}
-	local current = 1
-	while current <= #text do
-		lines[#lines+1] = text:sub(current, current + length-1)
-		current = current + length
-	end
-	return lines
-end
-
--- prints text in lines split by character with charLimit characters
--- x is just a basic x coordinate, but bottomY is the top pixel of the bottom line of text (all lines are printed above that)
--- returns the y coordinate of the top line of text so that this can be chained together (caller need to add space, however)
-local function printMultiLine(text, charLimit, x, bottomY)
-	local lines = splitIntoEqualLines(text, charLimit)
-	local topY = bottomY - (#lines-1) * MainFont:getHeight()
-	local curry = topY
-	for i,line in ipairs(lines) do
-		love.graphics.print(line, x, curry)
-		curry = curry + MainFont:getHeight()
-	end
-	return topY
-end
-
 function Terminal:draw()
 	-- current input
 	-- promptY: y value of the line of text with the prompt
@@ -141,21 +174,7 @@ function Terminal:draw()
 	love.graphics.setColor(255,255,255,255)
 	
 	-- cursor
-	love.graphics.print(self.cursor_char, self:cursor_pixel_position(promptY))
+	love.graphics.print(self.cursor_char, self:_cursor_pixel_position(promptY))
 end
-
-Signal.register('tty_stdin', function(input)
-	if (Terminal.echo) then
-		Terminal.scrollback_out:add({Terminal.prompt..input, {255, 255, 255}})
-	end
-end)
-
-Signal.register('tty_stdout', function(output)
-	Terminal.scrollback_out:add({output, {255, 255, 255}})
-end)
-
-Signal.register('tty_stderr', function(output)
-	Terminal.scrollback_out:add({output, {255, 0, 0}})
-end)
 
 return Terminal
