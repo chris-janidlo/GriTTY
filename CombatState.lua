@@ -20,6 +20,8 @@ function CombatState:enter(previous)
 	
 	self.p = Parse(BaseCommands)
 	self.p:addCommands(PlayerCommands)
+
+	print(self.p)
 end
 
 function CombatState:execute(input)
@@ -31,7 +33,11 @@ function CombatState:execute(input)
 				end
 				Player:pushAction(command, arguments)
 			else
-				command.action(self.t, arguments)
+				if command.name == 'help' then
+					command.action(self.t, self.p)
+				else
+					command.action(self.t, arguments)
+				end
 			end
 		else
 			self.t:print('command "'..command..'" not recognized', true)

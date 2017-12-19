@@ -1,3 +1,5 @@
+local Gamestate = require 'hump.gamestate'
+
 ---------- COMMAND FORMAT ----------
 -- table with following values
 -- name: command name (redundant but useful)
@@ -11,7 +13,8 @@ cmds.help = {
 	name = 'help',
 	helpString = 'print this message',
 	helpOrder = -50,
-	action = function(terminal)
+	-- NEEDS TO BE PASSED THE CURRENT PARSER INSTANCE
+	action = function(terminal, parser)
 		local function helpSort(cmd1, cmd2)
 			local a, b = cmd1.helpOrder or 137137137137137137137137137137137137137, cmd2.helpOrder or 137137137137137137137137137137137137137
 			if a ~= b then
@@ -23,7 +26,7 @@ cmds.help = {
 
 		terminal:print('GriTTY version 1.37')
 		local order = {}
-		for s, cmd in pairs(cmds) do
+		for s, cmd in pairs(parser.commands) do
 			table.insert(order, cmd)
 		end
 		table.sort(order, helpSort)
@@ -38,7 +41,7 @@ cmds.exit = {
 	helpString = 'exit current application and return to previous',
 	helpOrder = -30,
 	action = function(terminal)
-		terminal:print('NOT IMPLEMENTED', true)
+		Gamestate.pop()
 	end
 }
 

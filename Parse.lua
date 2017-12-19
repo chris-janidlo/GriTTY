@@ -1,4 +1,5 @@
 local Class = require 'hump.class'
+local ut = require 'Utilities'
 
 local Parse = Class{}
 
@@ -6,7 +7,7 @@ local Parse = Class{}
 -- Parse doesn't care what a command object looks like, but since the allCommands method returns strings, avoid making command objects strings so that the difference can be seen
 	-- shouldn't be an issue but ya never know doncha know
 function Parse:init(commands)
-	self.commands = commands
+	self.commands = ut.clone(commands)
 end
 
 function Parse:addCommand(name, command)

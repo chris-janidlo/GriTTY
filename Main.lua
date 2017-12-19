@@ -1,6 +1,7 @@
 local Gamestate = require 'hump.gamestate'
 local Timer = require 'hump.timer'
 local CombatState = require 'CombatState'
+local LogonShell = require 'LogonShell'
 local Pause = require 'Pause'
 
 local function roundToNearest(value, rounder)
@@ -13,7 +14,7 @@ function love.load()
 	local height = MainFont:getHeight()
 	love.window.setMode(roundToNearest(love.graphics.getWidth(), height), roundToNearest(love.graphics.getHeight(), height))
 	Gamestate.registerEvents()
-	Gamestate.switch(CombatState)
+	Gamestate.switch(LogonShell)
 end
 
 function love.update(dt)
