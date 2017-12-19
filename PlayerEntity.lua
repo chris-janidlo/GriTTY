@@ -1,5 +1,4 @@
 local Class = require 'hump.class'
-local Signal = require 'hump.signal'
 local CombatEntity = require 'CombatEntity'
 local Deque = require 'DataStructures.Deque'
 local ColorDefinitions = require 'ColorDefinitions'
@@ -22,8 +21,7 @@ end
 function PlayerEntity:update(dt)
 	if self.actionQueue.size > 0 and not self.acting then
 		local item = self.actionQueue:pop()
-		Signal.emit('tty_stdout', 'executing action \''..item.cmd.name..'\'...')		
-		self:action(item.cmd.actionFun, unpack(item.args or {}))
+		self:action(item.cmd.action, unpack(item.args or {}))
 	end
 end
 

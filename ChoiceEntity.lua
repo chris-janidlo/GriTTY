@@ -13,18 +13,9 @@ function ChoiceEntity:init(indicator, location, tree)
 	self.tree = tree
 end
 
-function ChoiceEntity:getActionListFromTree()
-	local vals = {self.tree:evaluate(self)}
-	local actionList = {}
-	for i = 1,#vals do
-		actionList = UT.arrayConcat(actionList, vals[i])
-	end
-	return actionList
-end
-
 function ChoiceEntity:update(dt)
 	if not self.acting then
-		self:action(self:getActionListFromTree())
+		self:action(self.tree:evaluate(self))
 	end
 end
 

@@ -2,12 +2,10 @@ local ChoiceEntity = require 'ChoiceEntity'
 local CT = require 'DataStructures.ChoiceTree'
 local Point = require 'DataStructures.StaticIntPointField'
 
-local circleAction = {
-	{
-		function(rudy) rudy.location = Point(-rudy.location.y, rudy.location.x) end,
-		.35
-	}
-}
+local circleAction = function(terminal, rudy, wait)
+	rudy.location = Point(-rudy.location.y, rudy.location.x) 
+	wait(.35)
+end
 
 
 local behavior = CT.Leaf(circleAction)

@@ -1,6 +1,6 @@
 local Class = require 'hump.class'
 local Timer = require 'hump.timer'
-local Signal = require 'hump.signal'
+local Terminal = require 'Terminal'
 
 local CombatEntity = Class{}
 
@@ -65,7 +65,7 @@ function CombatEntity:action(actionFun, ...)
 	self.acting = true
 	args = {...}
 	Timer.script(function(wait)
-		actionFun(wait, self, unpack(args)) -- unfortunately, can't pass ... without this silly workaround
+		actionFun(Terminal.getActive(), self, wait, unpack(args)) -- unfortunately, can't pass ... without this silly workaround
 		self.acting = false -- have to set this inside the coroutine in order to be accurate
 	end)
 end

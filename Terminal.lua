@@ -2,9 +2,10 @@ local utf8 = require 'utf8'
 local Class = require 'hump.class'
 local ScrollbackBuffer = require 'DataStructures.ScrollbackBuffer'
 local Deque = require 'DataStructures.Deque'
-require 'CommandProcessor'
+-- require 'CommandProcessor'
 
 local Terminal = Class{}
+Terminal._instances = {inactive = {}}
 
 ----------------------------------------------------------------------------
 ---------------------------- HELPER FUNCTIONS ------------------------------
@@ -73,7 +74,7 @@ end
 -----------------------------------------------------------------------------------
 
 function Terminal:init(position, echo)
-	love.keyboard.setKeyRepeat(true)
+	self:setActive()
 
 	-- position to print terminal line (including prompt)
 	self.x = position.x
@@ -104,10 +105,24 @@ end
 -- TODO: give this the same signature as love.graphics.print
 function Terminal:print(text, isError)
 	if isError then 
-		Terminal.scrollback_out:add({text, {255, 0, 0}})
+		self.scrollback_out:add({text, {255, 0, 0}})
 	else
-		Terminal.scrollback_out:add({text, {255, 255, 255}})
+		self.scrollback_out:add({text, {255, 255, 255}})
 	end
+end
+
+-- 'static' method; returns global active terminal instance
+function Terminal.getActive()
+	return Terminal._instances.active
+end
+
+-- deactivates any other terminal instances and sets this as the global active terminal
+function Terminal:setActive()
+	if Terminal._instances.active then
+		Terminal._instances.inactive[Terminal._instances.active] = true
+	end
+	Terminal._instances.inactive[self] = false
+	Terminal._instances.active = self
 end
 
 --------------------------------------------------------------------------
@@ -130,7 +145,7 @@ function Terminal:keypressed(key)
 		self.input_queue:push(self.input)
 		self.scrollback_in:add(self.input)
 		if (self.echo) then
-			self.scrollback_out:add({Terminal.prompt..input, {255, 255, 255}})
+			self.scrollback_out:add({self.prompt..self.input, {255, 255, 255}})
 		end
 		self.input = ""
 		self.cursor_pos = -1

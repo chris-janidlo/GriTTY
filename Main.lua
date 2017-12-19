@@ -1,5 +1,4 @@
 local Gamestate = require 'hump.gamestate'
-local Signal = require 'hump.signal'
 local Timer = require 'hump.timer'
 local CombatState = require 'CombatState'
 local Pause = require 'Pause'
@@ -9,6 +8,7 @@ local function roundToNearest(value, rounder)
 end
 
 function love.load()
+	love.keyboard.setKeyRepeat(true)
 	MainFont = love.graphics.setNewFont('Monoid/Monoid-Regular.ttf')
 	local height = MainFont:getHeight()
 	love.window.setMode(roundToNearest(love.graphics.getWidth(), height), roundToNearest(love.graphics.getHeight(), height))
@@ -25,7 +25,3 @@ function love.keypressed(key, scancode, isrepeat)
 		Gamestate.push(Pause)
 	end
 end
-
-Signal.register('tty_stdin', function (input)
-	print(input)
-end)
