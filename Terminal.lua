@@ -4,7 +4,6 @@ local ScrollbackBuffer = require 'DataStructures.ScrollbackBuffer'
 local Timer = require 'hump.timer'
 local Deque = require 'DataStructures.Deque'
 local colors = require 'ColorDefinitions'
--- require 'CommandProcessor'
 
 local Terminal = Class{}
 Terminal._instances = {inactive = {}}
