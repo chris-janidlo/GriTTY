@@ -228,7 +228,15 @@ end
 function Terminal:draw()
 	-- current input
 	-- promptY: y value of the line of text with the prompt
-	local promptY = printMultiLine(self.prompt..self.input, self.charsPerLine, self.x, self.y)
+	local promptY
+	local try_print_input = function()
+		promptY = printMultiLine(self.prompt..self.input, self.charsPerLine, self.x, self.y)
+	end
+	if not pcall(try_print_input) then
+		-- FIXME: rather than fix the unicode crash, this just covers it up by hard resetting input
+		self.input = ''
+		try_print_input()
+	end
 
 	-- previous output
 	local loopy = promptY - MainFont:getHeight()
