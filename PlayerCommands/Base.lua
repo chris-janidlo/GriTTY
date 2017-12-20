@@ -14,7 +14,7 @@ local function move(name, point, i)
 		action = function(terminal, player, wait)
 			playerPrint(terminal, name)
 
-			player:setColor(player.actingColor)
+			player:setColor(colors.playerActing)
 			wait(.15)
 			player.location = player.location + point
 			wait(.2)
@@ -32,7 +32,7 @@ local function dodge(name, direction, i)
 		action = function(terminal, player, wait)
 			playerPrint(terminal, name)
 
-			player:setColor(player.actingColor)
+			player:setColor(colors.playerActing)
 			wait(.15)
 
 			player.invuln = true; player:setIndicator('.')
@@ -79,7 +79,7 @@ cmds.wait = {
 			terminal:print((seconds or '')..' is not a number', colors.errorMessage)
 		else
 			terminal:print('waiting for '..s..' seconds...')
-			player:setColor(player.actingColor)
+			player:setColor(colors.playerActing)
 			wait(s)
 			player:setColor()
 			terminal:print('done waiting.')
