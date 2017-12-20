@@ -35,7 +35,7 @@ local function deserialize(str)
 		cmds[i] = {}
 		cmds[i].args = {}
 		local first = true
-		for arg in command:gmatch('%w+') do
+		for arg in command:gmatch('%S+') do
 			if first then
 				cmds[i].command = arg
 				first = false
