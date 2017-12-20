@@ -210,6 +210,7 @@ function Terminal:keypressed(key)
 		self.cursor_pos = math.min(self.cursor_pos + 1, -1)
 	
 	elseif key == "up" then
+		if self.scrollback_in:isEmpty() then return end
 		self.scrollback_pos = math.min(self.scrollback_pos + 1, self.scrollback_in.fin - 1)
 		self.input = self.scrollback_in:lookBackward(self.scrollback_pos)
 		self.cursor_pos = -1

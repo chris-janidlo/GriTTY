@@ -16,6 +16,10 @@ function buffer:init(size, oldBuffer)
 	end
 end
 
+function buffer:isEmpty()
+	return self.size == 0
+end
+
 function buffer:add(object)
 	self.buffer[self.fin + 1] = object
 	self.fin = self.fin + 1
