@@ -1,11 +1,13 @@
 local utf8 = require 'utf8'
 local Class = require 'hump.class'
 local ScrollbackBuffer = require 'DataStructures.ScrollbackBuffer'
+local Timer = require 'hump.timer'
 local Deque = require 'DataStructures.Deque'
 -- require 'CommandProcessor'
 
 local Terminal = Class{}
 Terminal._instances = {inactive = {}}
+Terminal.blink_delay = 0.5
 
 ----------------------------------------------------------------------------
 ---------------------------- HELPER FUNCTIONS ------------------------------
@@ -130,6 +132,28 @@ function Terminal:print(input, isError)
 	end
 end
 
+function Terminal:setBlinking(active)
+	if active == false then
+		Timer.cancel(Terminal._instances.active._blink_handler)
+	else
+		self._blink_handler = Timer.every(Terminal.blink_delay, function()
+			if self.cursor_char == '|' then
+				self.cursor_char = ''
+			else
+				self.cursor_char = '|'
+			end
+		end)
+	end		
+end
+
+-- temporarily pause blinking
+-- for, ie, typing, hitting arrow, hitting return
+function Terminal:pauseBlinking()
+	self.cursor_char = '|'
+	self:setBlinking(false)
+	Timer.after(Terminal.blink_delay, self:setBlinking(true))
+end
+
 -- 'static' method; returns global active terminal instance
 function Terminal.getActive()
 	return Terminal._instances.active
@@ -139,9 +163,11 @@ end
 function Terminal:setActive()
 	if Terminal._instances.active then
 		Terminal._instances.inactive[Terminal._instances.active] = true
+		Terminal._instances.active:setBlinking(false)
 	end
 	Terminal._instances.inactive[self] = false
 	Terminal._instances.active = self
+	self:setBlinking(true)
 end
 
 --------------------------------------------------------------------------
@@ -152,10 +178,13 @@ end
 function Terminal:textinput(key)
 	local l, r = self:_split_at_cursor()
 	self.input = l .. key .. r
+	self:pauseBlinking()
 end
 
 -- handles special key codes (ie backspace, return, arrow keys)
 function Terminal:keypressed(key)
+	self:pauseBlinking()
+
 	if key == "backspace" then
 		local l, r = self:_split_at_cursor(true)
 		self.input = l .. r
