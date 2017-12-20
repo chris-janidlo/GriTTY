@@ -20,8 +20,6 @@ function CombatState:enter(previous)
 	
 	self.p = Parse(BaseCommands)
 	self.p:addCommands(PlayerCommands)
-
-	print(self.p)
 end
 
 function CombatState:execute(input)
