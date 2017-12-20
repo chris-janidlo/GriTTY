@@ -43,7 +43,11 @@ cmds.exit = {
 	helpString = 'exit current application and return to previous',
 	helpOrder = -30,
 	action = function(terminal)
-		Gamestate.pop()
+		local status, error = pcall(function() Gamestate.pop() end)
+		if error and error:find('more') then
+			-- FIXME: depends on wording of 'No more states to pop!' error message
+			love.event.quit()
+		end
 	end
 }
 
