@@ -1,4 +1,5 @@
 local PointField = require 'DataStructures.StaticIntPointField'
+local colors = require 'ColorDefinitions'
 
 local function playerPrint(t, name)
 	t:print('executing action \''..name..'\'...')
@@ -67,5 +68,23 @@ cmds.ww = dodge('ww', e.w, 1)
 cmds.aa = dodge('aa', e.a, 2)
 cmds.ss = dodge('ss', e.s, 3)
 cmds.dd = dodge('dd', e.d, 4)
+
+cmds.wait = {
+	name = 'wait x',
+	helpString = 'wait for x seconds',
+	isPlayer = true,
+	action = function(terminal, player, wait, seconds)
+		local s = tonumber(seconds)
+		if s == nil then
+			terminal:print((seconds or '')..' is not a number', colors.errorMessage)
+		else
+			terminal:print('waiting for '..s..' seconds...')
+			player:setColor(player.actingColor)
+			wait(s)
+			player:setColor()
+			terminal:print('done waiting.')
+		end
+	end
+}
 
 return cmds
