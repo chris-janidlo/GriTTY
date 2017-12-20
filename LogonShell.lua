@@ -55,7 +55,7 @@ Type "help" for help.
 end
 
 function LogonShell:resume()
-	self.t:setActive()
+	self.t:makeActive()
 end
 
 function LogonShell:update(dt)

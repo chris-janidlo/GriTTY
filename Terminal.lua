@@ -93,7 +93,7 @@ end
 -----------------------------------------------------------------------------------
 
 function Terminal:init(position, echo)
-	self:setActive()
+	self:makeActive()
 
 	-- position to print terminal line (including prompt)
 	self.x = position.x
@@ -160,7 +160,8 @@ function Terminal.getActive()
 end
 
 -- deactivates any other terminal instances and sets this as the global active terminal
-function Terminal:setActive()
+-- also turns cursor blinking on for this instance and off for every other instance
+function Terminal:makeActive()
 	if Terminal._instances.active then
 		Terminal._instances.inactive[Terminal._instances.active] = true
 		Terminal._instances.active:setBlinking(false)
