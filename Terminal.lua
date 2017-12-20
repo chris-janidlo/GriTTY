@@ -6,6 +6,8 @@ local Deque = require 'DataStructures.Deque'
 local colors = require 'ColorDefinitions'
 
 local Terminal = Class{}
+
+---------- 'STATIC' VARIABLES ----------
 Terminal._instances = {inactive = {}}
 Terminal.blink_delay = 0.5
 
