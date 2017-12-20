@@ -3,6 +3,7 @@ local Terminal = require 'Terminal'
 local CombatState = require 'CombatState'
 local Parse = require 'Parse'
 local BaseCommands = require 'BaseCommands'
+local colors = require 'ColorDefinitions'
 local Vector = require 'hump.vector'
 local Gamestate = require 'hump.gamestate'
 
@@ -31,7 +32,7 @@ function LogonShell:execute(input)
 				command.action(self.t, arguments)
 			end
 		else
-			self.t:print('command "'..command..'" not recognized', true)
+			self.t:print('command "'..command..'" not recognized', colors.errorMessage)
 		end
 	end
 end

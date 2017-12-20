@@ -3,6 +3,7 @@
 local Terminal = require 'Terminal'
 local CombatArena = require 'CombatArena'
 local Vector = require 'hump.vector'
+local colors = require 'ColorDefinitions'
 
 local Parse = require 'Parse'
 local BaseCommands = require 'BaseCommands'
@@ -38,7 +39,7 @@ function CombatState:execute(input)
 				end
 			end
 		else
-			self.t:print('command "'..command..'" not recognized', true)
+			self.t:print('command "'..command..'" not recognized', colors.errorMessage)
 		end
 	end
 end

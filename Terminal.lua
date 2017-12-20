@@ -3,6 +3,7 @@ local Class = require 'hump.class'
 local ScrollbackBuffer = require 'DataStructures.ScrollbackBuffer'
 local Timer = require 'hump.timer'
 local Deque = require 'DataStructures.Deque'
+local colors = require 'ColorDefinitions'
 -- require 'CommandProcessor'
 
 local Terminal = Class{}
@@ -121,14 +122,10 @@ function Terminal:popInput()
 end
 
 -- add text as a new entry in this this terminal's output scrollback
--- TODO: give this the same signature as love.graphics.print
-function Terminal:print(input, isError)
+-- TODO: support multi colored strings
+function Terminal:print(input, color)
 	for i, text in ipairs(splitByNewline(input)) do
-		if isError then 
-			self.scrollback_out:add({text, {255, 0, 0}})
-		else
-			self.scrollback_out:add({text, {255, 255, 255}})
-		end
+		self.scrollback_out:add({text, color or colors.white})
 	end
 end
 
