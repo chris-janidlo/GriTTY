@@ -2,7 +2,7 @@ local PointField = require 'DataStructures.StaticIntPointField'
 local colors = require 'ColorDefinitions'
 
 local function playerPrint(t, name)
-	t:print('executing action \''..name..'\'...')
+	t:print('executing "'..name..'".')
 end
 
 local function move(name, point, i)

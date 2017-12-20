@@ -28,7 +28,7 @@ function CombatState:execute(input)
 		if type(command) == 'table' then
 			if command.isPlayer then
 				if Player.acting then
-					self.t:print('added to queue')
+					self.t:print('added "'..command.name..'" to queue.')
 				end
 				Player:pushAction(command, arguments)
 			else
