@@ -162,7 +162,9 @@ function Terminal:keypressed(key)
 
 	elseif key == "return" then
 		self.input_queue:push(self.input)
-		self.scrollback_in:add(self.input)
+		if self.input ~= '' then
+			self.scrollback_in:add(self.input)
+		end
 		if (self.echo) then
 			self.scrollback_out:add({self.prompt..self.input, {255, 255, 255}})
 		end
