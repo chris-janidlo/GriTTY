@@ -41,7 +41,17 @@ function LogonShell:enter(previous)
 	self.p = Parse(BaseCommands)
 	self.p:addCommands(cmds)
 
-	self.t:print('This is a work in progress (WIP) software that is provided AS IS and without warranty. Any damages caused to the user are not the liability of Crass Sandwich Ent. or any of its shareholders, subsidiaries, or employees. Type "help" for help.')
+	self.t:print([[
+GriTTY version 1.37
+
+User understands that software is experimental. Crass Sandwich Ent. makes no representations or warranties of any kind.
+
+Ready
+
+
+Type "help" for help.
+
+]])
 end
 
 function LogonShell:resume()

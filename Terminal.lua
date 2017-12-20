@@ -69,6 +69,23 @@ local function printMultiLine(text, charLimit, x, bottomY)
 	return topY
 end
 
+local function splitByNewline(s)
+	if s:sub(-1)~="\n" then s=s.."\n" end
+	local lines = {}
+	for l in s:gmatch("(.-)\n") do
+		-- we want to print empty lines in multi-line strings, such as a greeting message or cowsay
+		-- however, in general, we don't want ot print an empty line for empty text input, ie pressing enter with no input
+		-- so we compromize
+		if #lines > 0 and l == '' then
+			l = '\n'
+		end
+		table.insert(lines, l)
+	end
+	return lines
+	-- if s:sub(-1)~="\n" then s=s.."\n" end
+	-- return s:gmatch("(.-)\n")
+end
+
 -----------------------------------------------------------------------------------
 ---------------------------- INTERFACE FUNCTIONALITY ------------------------------
 -----------------------------------------------------------------------------------
@@ -103,11 +120,13 @@ end
 
 -- add text as a new entry in this this terminal's output scrollback
 -- TODO: give this the same signature as love.graphics.print
-function Terminal:print(text, isError)
-	if isError then 
-		self.scrollback_out:add({text, {255, 0, 0}})
-	else
-		self.scrollback_out:add({text, {255, 255, 255}})
+function Terminal:print(input, isError)
+	for i, text in ipairs(splitByNewline(input)) do
+		if isError then 
+			self.scrollback_out:add({text, {255, 0, 0}})
+		else
+			self.scrollback_out:add({text, {255, 255, 255}})
+		end
 	end
 end
 

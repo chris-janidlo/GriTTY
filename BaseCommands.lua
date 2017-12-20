@@ -24,14 +24,16 @@ cmds.help = {
 			end
 		end
 
-		terminal:print('GriTTY version 1.37')
+		terminal:print('Available commands:')
 		local order = {}
+		local len = 0
 		for s, cmd in pairs(parser.commands) do
 			table.insert(order, cmd)
+			len = math.max(#cmd.name, len)
 		end
 		table.sort(order, helpSort)
 		for i,cmd in ipairs(order) do
-			terminal:print(cmd.name..':\t'..cmd.helpString)
+			terminal:print(cmd.name..(' '):rep(len-#cmd.name)..'\t'..cmd.helpString)
 		end
 	end
 }
