@@ -11,7 +11,7 @@ local PlayerCommands = require 'PlayerCommands.Base'
 local CombatState = {}
 
 function CombatState:enter(previous)
-	CombatArena:initialize(16, 16, self.t)
+	CombatArena:initialize(16, 16)
 
 	self.t = Terminal(Vector(
 		CombatArena.rectLocation.x + CombatArena.rectDimensions.x + MainFont:getWidth(' '),
