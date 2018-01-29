@@ -30,6 +30,15 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 	self:Spawn(rudy(), 'agents')
 end
 
+function CombatArena:deinitialize()
+	for key, value in pairs(self) do
+		if type(value) ~= 'function' then
+			key = nil
+		end
+	end
+	Player = nil
+end
+
 -- entityMap is a string that must be set to one of 'agents', 'projectiles', or 'particles'
 -- returns true if successful, false if not (entity/location already exists)
 function CombatArena:Spawn(entity, entityMap)

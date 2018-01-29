@@ -1,7 +1,6 @@
 -- hump style gamestate that handles combat stage (arena and terminal instance)
 
 local Terminal = require 'Terminal'
-local CombatArena = require 'CombatArena'
 local Vector = require 'hump.vector'
 local colors = require 'ColorDefinitions'
 
@@ -24,8 +23,7 @@ function CombatState:enter(previous)
 end
 
 function CombatState:leave()
-	-- destruct player so that nothing weird happens
-	Player = nil
+	CombatArena:deinitialize()
 end
 
 function CombatState:execute(input)

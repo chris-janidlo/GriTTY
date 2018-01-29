@@ -1,3 +1,5 @@
+CombatArena = require 'CombatArena'
+
 local Gamestate = require 'hump.gamestate'
 local Timer = require 'hump.timer'
 local CombatState = require 'CombatState'
