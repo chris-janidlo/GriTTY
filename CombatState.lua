@@ -23,6 +23,11 @@ function CombatState:enter(previous)
 	self.p:addCommands(PlayerCommands)
 end
 
+function CombatState:leave()
+	-- destruct player so that nothing weird happens
+	Player = nil
+end
+
 function CombatState:execute(input)
 	for command, arguments in self.p:parse(input) do
 		if type(command) == 'table' then
