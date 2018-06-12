@@ -26,8 +26,6 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 	Player = PlayerEntity('o', PointField(0,0))
 
 	self:Spawn(Player, 'agents')
-
-	self:Spawn(rudy(), 'agents')
 end
 
 function CombatArena:deinitialize()
@@ -39,20 +37,52 @@ function CombatArena:deinitialize()
 	Player = nil
 end
 
--- entityMap is a string that must be set to one of 'agents', 'projectiles', or 'particles'
--- returns true if successful, false if not (entity/location already exists)
-function CombatArena:Spawn(entity, entityMap)
+-- checks for correctness, then returns the map associated with the given string
+function CombatArena:getEntityFromString(entityMap)
 	assert(type(entityMap) == 'string', 'entityMap must be a string')
 	assert(
 		entityMap == 'agents' or entityMap == 'projectiles' or entityMap == 'particles',
 		'given string "'..entityMap..'" is not a valid entity map'
 	)
-	local map = self[entityMap]
-	if not map:get(entity) and not map:get(entity.location) then
+	return self[entityMap]
+end
+
+-- entityMap is a string that must be set to one of 'agents', 'projectiles', or 'particles'
+-- returns true if successful, false if not (entity/location already exists)
+function CombatArena:Spawn(entity, entityMap)
+	local map = self:getEntityFromString(entityMap)
+	if not map:get(entity) and not map:get(entity.location) and self:inBounds(entity.location) then
 		map:set(entity.location, entity)
 		return true
 	end
 	return false
+end
+
+function CombatArena:Despawn(entity, entityMap)
+	local map = nil
+	if entityMap then
+		map = self:getEntityFromString(entityMap)
+	else
+		-- if entityMap is not specified, try to figure out what it is
+		if self.agents:get(entity) then
+			map = self.agents
+		elseif self.projectiles:get(entity) then
+			map = self.projectiles
+		elseif self.particles:get(entity) then
+			map = self.particles
+		end
+	end
+	if not map then return end
+	
+	if map:get(entity) then
+		map:unset(entity, entity.location)
+		entity:deinit()
+	end
+end
+
+function CombatArena:GetFromMap(map, query)
+	local map = self:getEntityFromString(map)
+	return map:get(query)
 end
 
 function CombatArena:drawEntityMap(map)
@@ -96,11 +126,28 @@ function CombatArena:updateEntityPositionsInMap(map)
 	end
 end
 
+-- take care of dead dudes
+function CombatArena:checkHealth(map)
+	stuffToSet = {}
+	for location,ent in map:iterator() do
+		if ent.health and ent.health <= 0 then stuffToSet.insert(ent) end
+	end
+	for i,v in ipairs(stuffToSet) do
+		self:Despawn(v)
+	end
+end
+
+
 function CombatArena:update(dt)
 	self:updateEntityPositionsInMap(self.agents)
 	self:updateEntityPositionsInMap(self.projectiles)
 	self:updateEntityPositionsInMap(self.particles)
+	self:checkHealth(self.agents)
+	self:checkHealth(self.projectiles)
+	self:checkHealth(self.particles)
 	self.agents:callAll('update', dt)
+	self.projectiles:callAll('update', dt)
+	self.particles:callAll('update', dt)
 end
 
 return CombatArena

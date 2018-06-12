@@ -9,10 +9,23 @@ CombatEntity.maxHealth = 100
 function CombatEntity:init(indicator, location)
 	self.indicator = indicator
 	self.location = location
-	self.health = maxHealth
+	self.health = CombatEntity.maxHealth
 	self.color = { 255, 255, 255, 255 }
 	self.acting = false
 	self.invuln = false
+end
+
+function CombatEntity:ChangeHealth(deltaH)
+	if self.invuln then return end
+	
+	for k,v in pairs(self) do
+		print(tostring(k)..'\t'..tostring(v))
+	end
+	self.health = self.health + deltaH
+end
+
+function CombatEntity:deinit()
+	-- to be overridden as necessary
 end
 
 -- (re)sets color
