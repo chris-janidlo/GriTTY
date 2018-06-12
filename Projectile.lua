@@ -3,16 +3,16 @@ local CombatEntity = require 'CombatEntity'
 
 local Projectile = Class{__includes = CombatEntity}
 
-function Projectile:init(indicator, location, lifespan, damage)
+function Projectile:init(indicator, location, projectileParameters)
 	CombatEntity.init(self, indicator, location)
-	self.lifeTimer = lifespan
-	self.damage = damage or 0
+	self.lifeTimer = projectileParameters.lifespan or 13
+	self.damage = projectileParameters.damage or 0
 end
 
--- don't override this
+-- don't override this if messing with lifespan behavior
 function Projectile:update(dt)
 	local collision = CombatArena:GetFromMap('agents', self.location)
-	if collision ~= nil then
+	if self.collidedWithWall or collision ~= nil then
 		self:collide(collision)
 		CombatArena:Despawn(self)
 		return
@@ -23,9 +23,12 @@ function Projectile:update(dt)
 	end
 end
 
--- can be overridden for sub behavior
+-- override this for subclass lifespan behavior
+-- other can be nil (if colliding with wall)
 function Projectile:collide(other)
-	other:ChangeHealth(-self.damage)
+	if other then
+		other:ChangeHealth(-self.damage)
+	end
 end
 
 return Projectile

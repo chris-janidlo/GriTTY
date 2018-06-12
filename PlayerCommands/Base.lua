@@ -1,9 +1,14 @@
-local PointField = require 'DataStructures.StaticIntPointField'
 local Projectile = require 'Projectile'
+local Fireball = require 'Projectiles.Fireball'
 local colors = require 'ColorDefinitions'
+local dir = require 'Directions'
 
 local function playerPrint(t, name)
 	t:print('evaluating "'..name..'"')
+end
+
+local function errPrint(t, badVal, whyValIsBad)
+	t:print("'"..(badVal or '').."' "..whyValIsBad, colors.errorMessage)
 end
 
 local function move(name, point, i)
@@ -49,19 +54,6 @@ local function dodge(name, direction, i)
 	}
 end
 
-local dir = {
-	-- cardinal
-	up = PointField(0, -1),
-	left = PointField(-1, 0),
-	down = PointField(0, 1),
-	right = PointField(1, 0),
-	-- corners
-	up_right = PointField(1, -1),
-	up_left = PointField(-1, -1),
-	down_left = PointField(-1, 1),
-	down_right = PointField(1, 1),
-}
-
 local cmds = {}
 
 cmds.w = move('w', dir.up, 1)
@@ -79,9 +71,11 @@ cmds.wait = {
 	helpString = 'wait for x seconds',
 	isPlayer = true,
 	action = function(terminal, player, wait, seconds)
+		playerPrint(terminal, 'wait')
+
 		local s = tonumber(seconds)
 		if s == nil then
-			terminal:print((seconds or '')..' is not a number', colors.errorMessage)
+			errPrint(terminal, seconds, 'is not a number')
 		else
 			terminal:print('waiting for '..s..' seconds...')
 			player:setColor(colors.playerActing)
@@ -101,43 +95,33 @@ cmds.blt = {
 		playerPrint(terminal, 'blt')
 		
 		player:setColor(colors.playerActing)
-		local indicators = {
-			'\\', '\\', '|',  '/',  '/',
-
-			'\\',                   '/',
-
-			'-',    --[[ o ]]       '-',
-
-			'/',                   '\\',
-			
-			'/',  '/',  '|', '\\', '\\'
-		}
-		local circle = {
-			-- ordered exclusively so that indicators can look cool
-			dir.up_left * 2,			-- \
-			dir.up + dir.up_left,		-- \
-			dir.up * 2,					-- |
-			dir.up + dir.up_right,		-- /
-			dir.up_right * 2,			-- /
-			dir.left + dir.up_left,		-- \
-			dir.right + dir.up_right,	-- /
-			dir.left * 2,				-- -
-			dir.right * 2,				-- -
-			dir.left + dir.down_left,	-- /
-			dir.right + dir.down_right,	-- \
-			dir.down_left * 2,			-- /
-			dir.down + dir.down_left,	-- /
-			dir.down * 2,				-- |
-			dir.down + dir.down_right,	-- \
-			dir.down_right * 2			-- \
-		}
-		for i,v in ipairs(circle) do
-			local proj = Projectile(indicators[i], player.location + v, .4, 40)
+		for i,v in ipairs(dir.Squares[2].vectors) do
+			local proj = Projectile(dir.Squares[2].indicators[i], player.location + v, {lifespan = .4, damage = 40})
 			proj:setColor(colors.red)
 			CombatArena:Spawn(proj, 'projectiles')
 		end
 		wait(.2)
 		player:setColor()
+	end
+}
+
+cmds.proc = {
+	name = 'proc dir',
+	helpString = 'launch adversarial process in the given direction',
+	isPlayer = true,
+	action = function(terminal, player, wait, dirArg)
+		playerPrint(terminal, 'proc')
+		
+		local direction = dir[dirArg]
+		if not dir:IsCardinal(direction) then
+			errPrint(terminal, dirArg, 'is not a valid cardinal direction')
+		else
+			player:setColor(colors.playerActing)
+			local ball = Fireball('*', player.location + direction, direction, {damage = 90, timePerTile = .75})
+			CombatArena:Spawn(ball, 'projectiles')
+			wait(1)
+			player:setColor()
+		end
 	end
 }
 

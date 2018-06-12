@@ -122,6 +122,10 @@ function CombatArena:updateEntityPositionsInMap(map)
 		else
 			-- fix the entity's location but keep the map location the same
 			ent.location = map:get(ent)
+			-- let the entity know if it hit a wall
+			if not self:inBounds(location) then
+				ent.collidedWithWall = true
+			end
 		end
 	end
 end
