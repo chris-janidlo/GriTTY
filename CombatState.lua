@@ -56,6 +56,7 @@ function CombatState:update(dt)
 end
 
 function CombatState:draw()
+	love.graphics.print("FPS:"..love.timer.getFPS(),0,0)
 	self.t:draw()
 	CombatArena:draw()
 end

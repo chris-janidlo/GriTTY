@@ -141,17 +141,16 @@ function CombatArena:checkHealth(map)
 	end
 end
 
-
 function CombatArena:update(dt)
-	self:updateEntityPositionsInMap(self.agents)
-	self:updateEntityPositionsInMap(self.projectiles)
-	self:updateEntityPositionsInMap(self.particles)
-	self:checkHealth(self.agents)
-	self:checkHealth(self.projectiles)
-	self:checkHealth(self.particles)
 	self.agents:callAll('update', dt)
 	self.projectiles:callAll('update', dt)
 	self.particles:callAll('update', dt)
+	self:checkHealth(self.agents)
+	self:checkHealth(self.projectiles)
+	self:checkHealth(self.particles)
+	self:updateEntityPositionsInMap(self.agents)
+	self:updateEntityPositionsInMap(self.projectiles)
+	self:updateEntityPositionsInMap(self.particles)
 end
 
 return CombatArena
