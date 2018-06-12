@@ -26,4 +26,18 @@ function ut.clone (t) -- deep-copy a table
     return target
 end
 
+-- returns random real number in range, unlike love's default function
+function ut.random(min, max)
+	local rand = love.math.random
+	if min then
+		if max then
+			return rand() * (max - min) + min
+		else
+			return rand() * min
+		end
+	else
+		return rand()
+	end
+end
+
 return ut

@@ -3,6 +3,7 @@ local Projectile = require 'Projectile'
 local Colors = require 'ColorDefinitions'
 local Directions = require 'Directions'
 local Particle = require 'StaticParticle'
+local ut = require 'Utilities'
 
 local Fireball = Class{__includes = Projectile}
 
@@ -23,13 +24,13 @@ function Fireball:update(dt)
 	end
 end
 
-function Fireball:collide (other)
-	Projectile.collide(self, other)
-	for i,v in ipairs(Directions.Squares[1].vectors) do
-		local p = Particle('.', self.location + v, love.math.random(.3, .7))
+function Fireball:die ()
+	for i,v in ipairs(Directions.Circles[1].vectors) do
+		local p = Particle('.', self.location + v, ut.random(.13, .37))
 		p.color = Colors.harmlessOrange
 		CombatArena:Spawn(p, 'particles')
 	end
+	Projectile.die(self)
 end
 
 return Fireball

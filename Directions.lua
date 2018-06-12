@@ -84,4 +84,12 @@ d.Squares = {
 	}
 }
 
+d.Circles = {
+	[1] = {
+		vectors = {
+			d.up, d.left, d.right, d.down
+		}
+	}
+}
+
 return d
