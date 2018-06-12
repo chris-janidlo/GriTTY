@@ -48,6 +48,7 @@ function Terminal:_cursor_pixel_position(promptY)
 	return base + x * charwidth + 1, promptY + y * MainFont:getHeight() 
 end
 
+-- TODO: handle tabs
 local function splitIntoEqualLines(text, length)
 	if not text then return {} end
 	local lines = {}
