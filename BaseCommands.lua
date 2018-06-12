@@ -33,7 +33,7 @@ cmds.help = {
 		end
 		table.sort(order, helpSort)
 		for i,cmd in ipairs(order) do
-			terminal:print(cmd.name..(' '):rep(len-#cmd.name)..'\n   -'..cmd.helpString)
+			terminal:print(cmd.name..(' '):rep(len-#cmd.name)..' '..cmd.helpString)
 		end
 	end
 }
