@@ -22,4 +22,4 @@ install:
   - luarocks install love-release
 
 script:
-  - love-release -M bin src
+  - love-release -M $TRAVIS_BUILD_DIR src
