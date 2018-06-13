@@ -21,6 +21,7 @@ function Fireball:update(dt)
 	if self.timer >= self.timePerTile then
 		self.timer = 0
 		self.location = self.location + self.direction
+		self.damage = self.damage + 15
 	end
 end
 

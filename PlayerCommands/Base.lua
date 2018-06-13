@@ -117,7 +117,7 @@ cmds.proc = {
 			errPrint(terminal, dirArg, 'is not a valid cardinal direction')
 		else
 			player:setColor(colors.playerActing)
-			local ball = Fireball('*', player.location + direction, direction, {damage = 90, timePerTile = .75})
+			local ball = Fireball('*', player.location + direction, direction, {damage = 50, timePerTile = .75})
 			CombatArena:Spawn(ball, 'projectiles')
 			wait(1)
 			player:setColor()
