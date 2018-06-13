@@ -11,7 +11,7 @@ env:
 addons:
   apt:
     packages:
-      - libzip2
+      - libzip4
 
 before_install:
   - pip install hererocks
