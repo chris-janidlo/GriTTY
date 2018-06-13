@@ -1,12 +1,12 @@
 -- hump style gamestate that handles combat stage (arena and terminal instance)
 
-local Terminal = require 'Terminal'
+local Terminal = require 'Gamestate.Terminal'
 local Vector = require 'hump.vector'
-local colors = require 'ColorDefinitions'
+local colors = require 'Definitions.Colors'
 
-local Parse = require 'Parse'
-local BaseCommands = require 'BaseCommands'
-local PlayerCommands = require 'PlayerCommands.Base'
+local Parse = require 'Util.Parse'
+local BaseCommands = require 'PlayerCommands.Core'
+local PlayerCommands = require 'PlayerCommands.Combat.Core'
 
 local CombatState = {}
 

@@ -1,12 +1,12 @@
 local Class = require 'hump.class'
-local CombatEntity = require 'CombatEntity'
+local Entity = require 'Entities.Base'
 local Deque = require 'DataStructures.Deque'
 
 local PlayerEntity = Class{}
-PlayerEntity:include(CombatEntity)
+PlayerEntity:include(Entity)
 
 function PlayerEntity:init(indicator, location)
-	CombatEntity.init(self, indicator, location)
+	Entity.init(self, indicator, location)
 
 	----- actionQueue -----
 	-- whenever this is not empty and the player is currently not acting, the least recent item will be popped and executed. PlayerEntity assumes each entry and its contents are well-formed.

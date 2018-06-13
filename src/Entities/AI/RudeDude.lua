@@ -1,7 +1,7 @@
-local ChoiceEntity = require 'ChoiceEntity'
+local ChoiceEntity = require 'Entities.AI.Base'
 local CT = require 'DataStructures.ChoiceTree'
 local Point = require 'DataStructures.StaticIntPointField'
-local colors = require 'ColorDefinitions'
+local colors = require 'Definitions.Colors'
 
 local circleAction = function(terminal, rudy, wait)
 	rudy.location = Point(-rudy.location.y, rudy.location.x) 

@@ -1,9 +1,9 @@
 local Projectile = require 'Projectiles.Base'
 local Fireball = require 'Projectiles.Fireball'
 local Wind = require 'Projectiles.Wind'
-local colors = require 'ColorDefinitions'
-local glyphs = require 'FontGlyphDefinitions'
-local dir = require 'Directions'
+local colors = require 'Definitions.Colors'
+local glyphs = require 'Definitions.FontGlyphs'
+local dir = require 'Definitions.Geometry'
 
 local function playerPrint(t, name)
 	t:print('evaluating "'..name..'"')

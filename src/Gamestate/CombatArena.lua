@@ -1,9 +1,8 @@
 local PointField = require 'DataStructures.StaticIntPointField'
 local BidirectionalMap = require 'DataStructures.BidirectionalMap'
-local CombatEntity = require 'CombatEntity'
-local PlayerEntity = require 'PlayerEntity'
+local PlayerEntity = require 'Entities.Player'
 local Vector = require 'hump.vector'
-local rudy = require 'Enemies.RudeDude'
+local rudy = require 'Entities.AI.RudeDude'
 
 local CombatArena = {}
 

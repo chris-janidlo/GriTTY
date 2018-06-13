@@ -3,7 +3,7 @@ local Class = require 'hump.class'
 local ScrollbackBuffer = require 'DataStructures.ScrollbackBuffer'
 local Timer = require 'hump.timer'
 local Deque = require 'DataStructures.Deque'
-local colors = require 'ColorDefinitions'
+local colors = require 'Definitions.Colors'
 
 local Terminal = Class{}
 

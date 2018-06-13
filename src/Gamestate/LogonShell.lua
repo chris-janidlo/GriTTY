@@ -1,9 +1,9 @@
 -- main menu, more or less
-local Terminal = require 'Terminal'
-local CombatState = require 'CombatState'
-local Parse = require 'Parse'
-local BaseCommands = require 'BaseCommands'
-local colors = require 'ColorDefinitions'
+local Terminal = require 'Gamestate.Terminal'
+local CombatState = require 'Gamestate.CombatState'
+local Parse = require 'Util.Parse'
+local BaseCommands = require 'PlayerCommands.Core'
+local colors = require 'Definitions.Colors'
 local Vector = require 'hump.vector'
 local Gamestate = require 'hump.gamestate'
 

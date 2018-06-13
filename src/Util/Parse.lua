@@ -1,5 +1,5 @@
 local Class = require 'hump.class'
-local ut = require 'Utilities'
+local ut = require 'Util.Misc'
 
 local Parse = Class{}
 

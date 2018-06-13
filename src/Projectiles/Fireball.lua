@@ -1,9 +1,9 @@
 local Class = require 'hump.class'
 local Base = require 'Projectiles.Base'
-local Colors = require 'ColorDefinitions'
-local Directions = require 'Directions'
-local Particle = require 'StaticParticle'
-local ut = require 'Utilities'
+local Colors = require 'Definitions.Colors'
+local Directions = require 'Definitions.Geometry'
+local Particle = require 'Particles.Static'
+local ut = require 'Util.Misc'
 
 local Fireball = Class{__includes = Base}
 

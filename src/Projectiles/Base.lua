@@ -1,8 +1,8 @@
 local Class = require 'hump.class'
 local Vector = require 'hump.vector'
-local CombatEntity = require 'CombatEntity'
+local Entity = require 'Entities.Base'
 
-local Projectile = Class{__includes = CombatEntity}
+local Projectile = Class{__includes = Entity}
 
 -- meaningful projectileParamters:
 	-- timePerTile
@@ -10,7 +10,7 @@ local Projectile = Class{__includes = CombatEntity}
 	-- lifespan
 	-- damage
 function Projectile:init(indicator, location, projectileParameters)
-	CombatEntity.init(self, indicator, location)
+	Entity.init(self, indicator, location)
 	self.direction = projectileParameters.direction or Vector(0,0)
 	self.lifeTimer = projectileParameters.lifespan or 13
 	self.damage = projectileParameters.damage or 0

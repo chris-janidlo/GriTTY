@@ -1,10 +1,9 @@
-CombatArena = require 'CombatArena'
+CombatArena = require 'Gamestate.CombatArena'
 
 local Gamestate = require 'hump.gamestate'
 local Timer = require 'hump.timer'
-local CombatState = require 'CombatState'
-local LogonShell = require 'LogonShell'
-local Pause = require 'Pause'
+local LogonShell = require 'Gamestate.LogonShell'
+local Pause = require 'Gamestate.Pause'
 
 local function roundToNearest(value, rounder)
 	return math.floor(value / rounder) * rounder

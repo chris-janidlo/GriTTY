@@ -1,16 +1,16 @@
 local Class = require 'hump.class'
 local Timer = require 'hump.timer'
-local Terminal = require 'Terminal'
+local Terminal = require 'Gamestate.Terminal'
 
-local CombatEntity = Class{}
+local Entity = Class{}
 
-CombatEntity.maxHealth = 100
+Entity.maxHealth = 100
 
-function CombatEntity:init(indicator, location)
+function Entity:init(indicator, location)
 	self.indicator = indicator
 	self.currentIndicator = indicator
 	self.location = location
-	self.health = CombatEntity.maxHealth
+	self.health = Entity.maxHealth
 	self.color = { 255, 255, 255, 255 }
 	self.acting = false
 	self.invuln = false
@@ -18,7 +18,7 @@ function CombatEntity:init(indicator, location)
 	self.healthMod = 1
 end
 
-function CombatEntity:ChangeHealth(deltaH)
+function Entity:ChangeHealth(deltaH)
 	if self.invuln then return end
 	
 	for k,v in pairs(self) do
@@ -40,13 +40,13 @@ function CombatEntity:ChangeHealth(deltaH)
 	end)
 end
 
-function CombatEntity:deinit()
+function Entity:deinit()
 	-- to be overridden as necessary
 end
 
 -- (re)sets color
 -- default: white, full alpha
-function CombatEntity:setColor(r, g, b, a)
+function Entity:setColor(r, g, b, a)
 	if type(r) == 'table' then
 		self.color = r
 	else
@@ -54,22 +54,22 @@ function CombatEntity:setColor(r, g, b, a)
 	end
 end
 
-function CombatEntity:setIndicator(newInd, permanent)
+function Entity:setIndicator(newInd, permanent)
 	if not permanent then
 		self._tmpInd = self.currentIndicator
 	end
 	self.currentIndicator = newInd
 end
 
-function CombatEntity:resetIndicator()
+function Entity:resetIndicator()
 	if self._tmpInd then
 		self.currentIndicator = self._tmpInd
 		self._tmpInd = nil
 	end
 end
 
-function CombatEntity:__tostring()
-	return '<CombatEntity: '..self.currentIndicator..'>'
+function Entity:__tostring()
+	return '<Entity: '..self.currentIndicator..'>'
 end
 
 ----- ACTION DOCSTRING -----
@@ -88,7 +88,7 @@ end
 -- for every pair, the action is called and passed self (the identity of the calling entity) and any additional arguments that were given to the outer 'action' function. then, the script waits for the associated time before continuing to the next action.
 -- assumes that actionList is properly formatted and does NO ERROR HANDLING except to check if this entity is already in the middle of an action.
 ----- END DOCSTRING -----
-function CombatEntity:action(actionFun, ...)
+function Entity:action(actionFun, ...)
 	if self.acting then return end
 
 	self.acting = true
@@ -99,4 +99,4 @@ function CombatEntity:action(actionFun, ...)
 	end)
 end
 
-return CombatEntity
+return Entity

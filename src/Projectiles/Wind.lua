@@ -1,7 +1,7 @@
 local Class = require 'hump.class'
 local Timer = require 'hump.timer'
 local Base = require 'Projectiles.Base'
-local colors = require 'ColorDefinitions'
+local colors = require 'Definitions.Colors'
 
 local Wind = Class{__includes = Base}
 

@@ -1,10 +1,10 @@
 local Class = require 'hump.class'
-local CombatEntity = require 'CombatEntity'
+local Entity = require 'Entities.Base'
 
-local Particle = Class{__includes = CombatEntity}
+local Particle = Class{__includes = Entity}
 
 function Particle:init(indicator, location, lifetime)
-	CombatEntity.init(self, indicator, location)
+	Entity.init(self, indicator, location)
 	self.lifeTimer = lifetime
 end
 
