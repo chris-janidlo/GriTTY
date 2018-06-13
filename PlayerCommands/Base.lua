@@ -1,6 +1,8 @@
-local Projectile = require 'Projectile'
+local Projectile = require 'Projectiles.Base'
 local Fireball = require 'Projectiles.Fireball'
+local Wind = require 'Projectiles.Wind'
 local colors = require 'ColorDefinitions'
+local glyphs = require 'FontGlyphDefinitions'
 local dir = require 'Directions'
 
 local function playerPrint(t, name)
@@ -117,11 +119,30 @@ cmds.proc = {
 			errPrint(terminal, dirArg, 'is not a valid cardinal direction')
 		else
 			player:setColor(colors.playerActing)
-			local ball = Fireball('*', player.location + direction, direction, {damage = 50, timePerTile = .75})
+			local ball = Fireball('*', player.location + direction, direction)
 			CombatArena:Spawn(ball, 'projectiles')
 			wait(1)
 			player:setColor()
 		end
+	end
+}
+
+cmds.bmp = {
+	name = 'bmp',
+	helpString = 'push outward. makes ',
+	isPlayer = true,
+	action = function(terminal, player, wait)
+		playerPrint(terminal, 'bmp')
+
+		player:setColor(colors.playerActing)
+		for i,v in ipairs(dir.Squares[1].vectors) do
+			-- wind pushes out for two tiles
+			local wind = Wind(glyphs.fluid, player.location + v, v, {timePerTile = .2, lifespan = .4})
+			CombatArena:Spawn(wind, 'projectiles')
+		end
+		-- wait long enough for combos
+		wait(.405)
+		player:setColor()
 	end
 }
 

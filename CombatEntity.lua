@@ -8,11 +8,14 @@ CombatEntity.maxHealth = 100
 
 function CombatEntity:init(indicator, location)
 	self.indicator = indicator
+	self.currentIndicator = indicator
 	self.location = location
 	self.health = CombatEntity.maxHealth
 	self.color = { 255, 255, 255, 255 }
 	self.acting = false
 	self.invuln = false
+	self.invulnPeriod = .5
+	self.healthMod = 1
 end
 
 function CombatEntity:ChangeHealth(deltaH)
@@ -21,7 +24,20 @@ function CombatEntity:ChangeHealth(deltaH)
 	for k,v in pairs(self) do
 		print(tostring(k)..'\t'..tostring(v))
 	end
-	self.health = self.health + deltaH
+	self.health = self.health + deltaH * self.healthMod
+	self.invuln = true
+	local blink = Timer.every(.13, function()
+		if self.currentIndicator == '' then
+			self.currentIndicator = self.indicator
+		else
+			self.currentIndicator = ''
+		end
+	end)
+	Timer.after(self.invulnPeriod, function()
+		self.invuln = false
+		Timer.cancel(blink)
+		self.currentIndicator = self.indicator
+	end)
 end
 
 function CombatEntity:deinit()
@@ -40,20 +56,20 @@ end
 
 function CombatEntity:setIndicator(newInd, permanent)
 	if not permanent then
-		self._tmpInd = self.indicator
+		self._tmpInd = self.currentIndicator
 	end
-	self.indicator = newInd
+	self.currentIndicator = newInd
 end
 
 function CombatEntity:resetIndicator()
 	if self._tmpInd then
-		self.indicator = self._tmpInd
+		self.currentIndicator = self._tmpInd
 		self._tmpInd = nil
 	end
 end
 
 function CombatEntity:__tostring()
-	return '<CombatEntity: '..self.indicator..'>'
+	return '<CombatEntity: '..self.currentIndicator..'>'
 end
 
 ----- ACTION DOCSTRING -----

@@ -26,6 +26,8 @@ function CombatArena:initialize(max_x, max_y) -- possible ranges will be -max to
 	Player = PlayerEntity('o', PointField(0,0))
 
 	self:Spawn(Player, 'agents')
+
+	self:Spawn(rudy(), 'agents')
 end
 
 function CombatArena:deinitialize()
@@ -89,7 +91,7 @@ function CombatArena:drawEntityMap(map)
 	for location,ent in map:iterator() do
 		-- we draw at ent.location instead of location because it's the most up to date location we have. otherwise there's a stutter
 		love.graphics.print(
-			{ ent.color, ent.indicator },
+			{ ent.color, ent.currentIndicator },
 			ent.location.x * self.offset + self.center.x - self.offset / 2, -- draw at the center of the char instead of the top left
 			ent.location.y * self.offset + self.center.y - self.offset / 2
 		)
@@ -134,7 +136,7 @@ end
 function CombatArena:checkHealth(map)
 	stuffToSet = {}
 	for location,ent in map:iterator() do
-		if ent.health and ent.health <= 0 then stuffToSet.insert(ent) end
+		if ent.health and ent.health <= 0 then table.insert(stuffToSet, ent) end
 	end
 	for i,v in ipairs(stuffToSet) do
 		self:Despawn(v)

@@ -1,28 +1,16 @@
 local Class = require 'hump.class'
-local Projectile = require 'Projectile'
+local Base = require 'Projectiles.Base'
 local Colors = require 'ColorDefinitions'
 local Directions = require 'Directions'
 local Particle = require 'StaticParticle'
 local ut = require 'Utilities'
 
-local Fireball = Class{__includes = Projectile}
+local Fireball = Class{__includes = Base}
 
-function Fireball:init(indicator, location, direction, projectileParameters)
-	Projectile.init(self, indicator, location, projectileParameters)
-	self.direction = direction
-	self.timePerTile = projectileParameters.timePerTile or .25
-	self.timer = 0
+-- even though this is a projectile, it completely ignores given projectileParameters
+function Fireball:init(indicator, location, direction)
+	Base.init(self, indicator, location, {direction = direction, damage = 50, timePerTile = .75})
 	self.color = Colors.red
-end
-
-function Fireball:update(dt)
-	Projectile.update(self, dt)
-	self.timer = self.timer + dt
-	if self.timer >= self.timePerTile then
-		self.timer = 0
-		self.location = self.location + self.direction
-		self.damage = self.damage + 15
-	end
 end
 
 function Fireball:die ()
@@ -31,7 +19,12 @@ function Fireball:die ()
 		p.color = Colors.harmlessOrange
 		CombatArena:Spawn(p, 'particles')
 	end
-	Projectile.die(self)
+	Base.die(self)
+end
+
+function Fireball:moveTick()
+	Base.moveTick(self)
+	self.damage = self.damage + 15
 end
 
 return Fireball
