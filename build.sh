@@ -2,16 +2,18 @@
 
 LOVE_DOWNLOADS="https://bitbucket.org/rude/love/downloads/"
 MAC_DOWNLOAD_FILE="love-0.10.2-macosx-x64.zip"
+WIN_DOWNLOAD_FILE="love-0.10.2-win32.zip"
 
-COND="../src/ConditionalCompilation/"
-WINDOWS_FLAG_FILE="${COND}windows"
-MAC_FLAG_FILE="${COND}mac"
+COND="src/ConditionalCompilation/"
+# this is where you define additional conditional flags
 DEBUG_FLAG_FILE="${COND}debug"
+MAC_FLAG_FILE="${COND}mac"
+WIN_FLAG_FILE="${COND}win"
 
-BUILD_FOR_WINDOWS=false
 BUILD_FOR_MAC=false
+BUILD_FOR_WIN=false
 
-while getopts "dmw:" opt; do
+while getopts "dmw" opt; do
 	case "$opt" in
 	d)
 		touch $DEBUG_FLAG_FILE
@@ -21,14 +23,14 @@ while getopts "dmw:" opt; do
 		BUILD_FOR_MAC=true
 		;;
 	w)
-		touch $WINDOWS_FLAG_FILE
-		BUILD_FOR_WINDOWS=trueXW
+		touch $WIN_FLAG_FILE
+		BUILD_FOR_WIN=true
 		;;
 	esac
 done
 
-if $BUILD_FOR_WINDOWS || $BUILD_FOR_MAC; then
-	mkdir -p bin build
+if $BUILD_FOR_WIN || $BUILD_FOR_MAC; then
+	mkdir -p build bin
 	cd build
 fi
 
@@ -42,25 +44,55 @@ zip_and_exclude () {
 	popd
 }
 
-# =============================================================================
-# 									mac build
-# =============================================================================
 if $BUILD_FOR_MAC ; then
 	# delete old
 	rm -rf ../bin/GriTTY.app
+	rm -f ../bin/GriTTY_mac.zip
 
-	# build new
-	zip_and_exclude $WINDOWS_FLAG_FILE
+	# get required stuff
 	wget -N "${LOVE_DOWNLOADS}${MAC_DOWNLOAD_FILE}"
 	unzip -u "${MAC_DOWNLOAD_FILE}"
+
+	# build new
+	zip_and_exclude $WIN_FLAG_FILE
 	mkdir GriTTY.app
 	mv love.app/* GriTTY.app
 	mv GriTTY.love GriTTY.app/Contents/Resources/
 	cat ../res/Info.plist > GriTTY.app/Contents/Info.plist
 
-	# done
-	mv GriTTY.app ../bin
+	# move and compress
+	mv GriTTY.app ../bin/GriTTY.app
+	pushd ../bin/
+	zip -r9 GriTTY_mac.zip GriTTY.app
+	popd
+fi
+
+if $BUILD_FOR_WIN ; then
+	# delete old
+	rm -f ../bin/GriTTY_win32.zip
+
+	# get required stuff
+	wget -N "${LOVE_DOWNLOADS}${WIN_DOWNLOAD_FILE}"
+	unzip -u "${WIN_DOWNLOAD_FILE}"
+	WIN_FOLDER="${WIN_DOWNLOAD_FILE%.*}" # this just removes the zip extension
+
+	# build new
+	zip_and_exclude $MAC_FLAG_FILE
+	rm -rf GriTTY_win32
+	mkdir GriTTY_win32
+	cat "${WIN_FOLDER}/love.exe" GriTTY.love > GriTTY_win32/GriTTY.exe
+	mv "${WIN_FOLDER}"/*.dll GriTTY_win32
+	mv "${WIN_FOLDER}/license.txt" GriTTY_win32
+
+	# move and compress
+	cp -r GriTTY_win32 ../bin
+	pushd ../bin/
+	zip -r9 GriTTY_win32.zip GriTTY_win32
+	popd
 fi
 
 # cleanup
-rm -f $WINDOWS_FLAG_FILE $MAC_FLAG_FILE $DEBUG_FLAG_FILE
+if $BUILD_FOR_WIN || $BUILD_FOR_MAC; then
+	cd ..
+fi
+rm -f $WIN_FLAG_FILE $MAC_FLAG_FILE $DEBUG_FLAG_FILE
