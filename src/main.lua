@@ -1,3 +1,5 @@
+require 'ConditionalCompilation.Main'
+
 CombatArena = require 'Gamestate.CombatArena'
 
 local Gamestate = require 'hump.gamestate'

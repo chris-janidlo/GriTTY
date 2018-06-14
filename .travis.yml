@@ -1,6 +1,6 @@
 language: bash
 
-sudo: true
+sudo: false
 
 addons:
   apt:
