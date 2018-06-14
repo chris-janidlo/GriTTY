@@ -1,8 +1,8 @@
-os: osx # so we can use plutil to love.app's Info.plist
+os: osx # so we can use plutil to edit love.app's Info.plist
 language: bash
 sudo: false
 install:
-- "./install.sh"
+- ./install_butler.sh
 script:
 - "./build.sh -wm"
 # deploy:

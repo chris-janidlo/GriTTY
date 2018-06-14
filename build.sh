@@ -58,7 +58,10 @@ if $BUILD_FOR_MAC ; then
 	mkdir GriTTY.app
 	mv love.app/* GriTTY.app
 	mv GriTTY.love GriTTY.app/Contents/Resources/
-	cat ../res/Info.plist > GriTTY.app/Contents/Info.plist
+	# see https://love2d.org/wiki/Game_Distribution#Creating_a_Mac_OS_X_Application for what values need to be changed in Info.plist
+	plutil -replace CFBundleIdentifier -string com.crass_sandwich.GriTTY GriTTY.app/Contents/Info.plist
+	plutil -replace CFBundleName -string GriTTY GriTTY.app/Contents/Info.plist
+	plutil -remove UTExportedTypeDeclarations GriTTY.app/Contents/Info.plist
 
 	# move and compress
 	mv GriTTY.app ../bin/GriTTY.app
