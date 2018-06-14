@@ -1,5 +1,6 @@
 language: python
-sudo: false
+
+sudo: true
 
 addons:
   apt:
@@ -9,8 +10,7 @@ addons:
       - luarocks
 
 install:
-  - luarocks install --local love-release
-  - "`luarocks path`"
+  - sudo luarocks install love-release
 
 script:
   - love-release -M $TRAVIS_BUILD_DIR src
