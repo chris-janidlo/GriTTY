@@ -1,11 +1,14 @@
+os: osx # so we can use plutil to love.app's Info.plist
 language: bash
 sudo: false
+install:
+- "./install.sh"
 script:
 - "./build.sh -wm"
-deploy:
-  provider: releases
-  api_key:
-    secure: mBuy5JWHM0Zm79kjZwoDNzuDBT7aKxdWhCo/JCtI9j9F8CHy8a6IF8GXUUFET/Tn/0gvJHRHL/X2BsAQtUUTGY/J/Nr0t9xeXdpESljDwAFiNyendp2W5uU7LGBzhb6b+p/Nj+7ZQsdrnNfbPV5iBNWLiLZRTO7FdAcJhDYOCDGGTbteU6+Q4Gz9782KfSazJ1rXmXfZ63JuM5HEA9vGwNEAN9vs2KyBU2rWK7lb0Ev1aKZG6YI2WkGxEfIyCDlLxPPk//Zmf+MX1SJi5rz0Dlkkxykk7CDSohDrmg5xyBcPiF8ftj/GM6TP1Uu/pCwRhU7nbbpXG6HYcveS9Qjhb8pw7vNxGpp7FQmx0AhFWJw5fC2rsVU3vuSFtTs0kIaJH0KYIzXoW1kRzaZtQ+Jm8ZUhUbr+CH0CCoQ67SvcTgj1NWFzUSuuDl2x6jfGDIz4cpvtH++8r3Cj/nxtgTmSU9ItzyjZ/oZaf2zT286wguFcPnE47Q2Wsfe2Hww+UfhAFX7X/qol7VpGzRtYxLJtLEGuz5xex2maawPXaA4UoCS5vEYSYfh2BIIGyHK+tOFXmNC7CaVixgfYvbAezRFEDBFJgWcK7t6fGinowOClY76J3KHS8czogdt2JqwLkypfsm5FyGVoVzI54V20qSt8Dseq0D00Njt9zX9r/oE++PE=
-  file: bin/*.zip
-  on:
-    repo: crassSandwich/GriTTY
+# deploy:
+#   provider: releases
+#   api_key:
+#     secure: mBuy5JWHM0Zm79kjZwoDNzuDBT7aKxdWhCo/JCtI9j9F8CHy8a6IF8GXUUFET/Tn/0gvJHRHL/X2BsAQtUUTGY/J/Nr0t9xeXdpESljDwAFiNyendp2W5uU7LGBzhb6b+p/Nj+7ZQsdrnNfbPV5iBNWLiLZRTO7FdAcJhDYOCDGGTbteU6+Q4Gz9782KfSazJ1rXmXfZ63JuM5HEA9vGwNEAN9vs2KyBU2rWK7lb0Ev1aKZG6YI2WkGxEfIyCDlLxPPk//Zmf+MX1SJi5rz0Dlkkxykk7CDSohDrmg5xyBcPiF8ftj/GM6TP1Uu/pCwRhU7nbbpXG6HYcveS9Qjhb8pw7vNxGpp7FQmx0AhFWJw5fC2rsVU3vuSFtTs0kIaJH0KYIzXoW1kRzaZtQ+Jm8ZUhUbr+CH0CCoQ67SvcTgj1NWFzUSuuDl2x6jfGDIz4cpvtH++8r3Cj/nxtgTmSU9ItzyjZ/oZaf2zT286wguFcPnE47Q2Wsfe2Hww+UfhAFX7X/qol7VpGzRtYxLJtLEGuz5xex2maawPXaA4UoCS5vEYSYfh2BIIGyHK+tOFXmNC7CaVixgfYvbAezRFEDBFJgWcK7t6fGinowOClY76J3KHS8czogdt2JqwLkypfsm5FyGVoVzI54V20qSt8Dseq0D00Njt9zX9r/oE++PE=
+#   file: bin/*.zip
+#   on:
+#     repo: crassSandwich/GriTTY

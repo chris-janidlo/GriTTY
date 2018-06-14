@@ -4,7 +4,7 @@ local Terminal = require 'Gamestate.Terminal'
 local Vector = require 'hump.vector'
 local colors = require 'Definitions.Colors'
 
-local Parse = require 'Util.Parse'
+local Parse = require 'PlayerCommands.Parser'
 local BaseCommands = require 'PlayerCommands.Core'
 local PlayerCommands = require 'PlayerCommands.Combat.Core'
 
