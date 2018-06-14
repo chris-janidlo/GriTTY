@@ -6,6 +6,7 @@ addons:
     packages:
       - lua5.1
       - libzip-dev
+      - luarocks
 
 install:
   - luarocks install love-release
