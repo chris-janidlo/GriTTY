@@ -1,16 +1,5 @@
 language: bash
-
 sudo: false
 
-addons:
-  apt:
-    packages:
-      - lua5.1
-      - luarocks
-      - libzip-dev
-
-install:
-  - sudo luarocks install love-release
-
 script:
-  - love-release -M $TRAVIS_BUILD_DIR src
+  - ./build.sh -wm
