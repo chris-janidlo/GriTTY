@@ -3,3 +3,12 @@ sudo: false
 
 script:
   - ./build.sh -wm
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "nyX6Z0DUqxblINVgh3hCkEbY/LERqtlOXbPb8yuAON0pOMH3FApbSgRjpvZQfIBLYMZoUbVRWpb6KwFpUpB8E+0maZ0FSdRmBeZehymuBQxXMtnoMVr6iM4i7KJqwrDUVfXxR9ypDR8TB5eLs4GtvJre0caIxgsIrZzAK8ZbquApRgeZ8pjldauVzgsNiL1EE6S7A1EQwUYeWbnn8VRNR2iOcpzulZDsFryUkadftBb6bFij0oemnHZR0foqPWLBoh+SkQq0wWqqC3YU6j3MhnhIpcVe43Mg1rJaRk3oGIjmyGeEnm5H2ccLZbL2EyWMNnPyJqrgo4bIj9X1OMolkDZhb8zCMh58+6TU8ab2I0NpA1Zx+ptYOnToQ8l/T8KVN5edHHRMW/g/c7TBCUgF1ZPbq+1WEeIBfAR2szk6lbyWtaS84a5s4HpGsDnIudiFb9tGuIqSnDXMU15a94huiadUA4fF1BO2DCyIYREgTH+vJC/CaCK9zQXFBEBxT7Pwdm9DQ8yxDErxdW+ahjmtIVfT4x7BKD7WI2c1RJY+CMBYMJ9YqDp5hfA8pD8SBmWVnE+IBewVKOIFsfrnLSAVsUbA5/lVhahsDv4LKdINHpPzTWzY6XqReR70992ll9L9MFvbDmgHxnUqoqr3krU61kQr7AFX6HuYh7vycZLhXJ8="
+  file: bin/*.zip
+  skip_cleanup: true
+  on:
+    tags: true
