@@ -1,4 +1,4 @@
-language: python
+language: bash
 
 sudo: true
 
@@ -6,8 +6,8 @@ addons:
   apt:
     packages:
       - lua5.1
-      - libzip-dev
       - luarocks
+      - libzip-dev
 
 install:
   - sudo luarocks install love-release
