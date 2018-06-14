@@ -9,7 +9,8 @@ addons:
       - luarocks
 
 install:
-  - luarocks install love-release
+  - luarocks install --local love-release
+  - "`luarocks path`"
 
 script:
   - love-release -M $TRAVIS_BUILD_DIR src
