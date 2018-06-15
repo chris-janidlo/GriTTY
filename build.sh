@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -ev # suggested by travis
 
 LOVE_DOWNLOADS="https://bitbucket.org/rude/love/downloads/"
 MAC_DOWNLOAD_FILE="love-0.10.2-macosx-x64.zip"
