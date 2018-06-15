@@ -43,7 +43,7 @@ function LogonShell:enter(previous)
 	self.p:addCommands(cmds)
 
 	self.t:print([[
-GriTTY version 1.37
+GryTTY version 1.37
 
 User understands that software is experimental. Crass Sandwich Ent. makes no representations or warranties of any kind.
 

@@ -38,17 +38,17 @@ fi
 zip_and_exclude () {
 	pushd ../src
 	if [ -z "$1" ]; then
-		zip -r9 ../build/GriTTY.love .
+		zip -r9 ../build/GryTTY.love .
 	else
-		zip -r9 ../build/GriTTY.love . -x "$1"
+		zip -r9 ../build/GryTTY.love . -x "$1"
 	fi
 	popd
 }
 
 if $BUILD_FOR_MAC ; then
 	# delete old
-	rm -rf ../bin/GriTTY.app
-	rm -f ../bin/GriTTY_mac.zip
+	rm -rf ../bin/GryTTY.app
+	rm -f ../bin/GryTTY_mac.zip
 
 	# get required stuff
 	wget -N "${LOVE_DOWNLOADS}${MAC_DOWNLOAD_FILE}"
@@ -56,24 +56,24 @@ if $BUILD_FOR_MAC ; then
 
 	# build new
 	zip_and_exclude $WIN_FLAG_FILE
-	mkdir GriTTY.app
-	mv love.app/* GriTTY.app
-	mv GriTTY.love GriTTY.app/Contents/Resources/
+	mkdir GryTTY.app
+	mv love.app/* GryTTY.app
+	mv GryTTY.love GryTTY.app/Contents/Resources/
 	# see https://love2d.org/wiki/Game_Distribution#Creating_a_Mac_OS_X_Application for what values need to be changed in Info.plist
-	plutil -replace CFBundleIdentifier -string com.crass_sandwich.GriTTY GriTTY.app/Contents/Info.plist
-	plutil -replace CFBundleName -string GriTTY GriTTY.app/Contents/Info.plist
-	plutil -remove UTExportedTypeDeclarations GriTTY.app/Contents/Info.plist
+	plutil -replace CFBundleIdentifier -string com.crass_sandwich.GryTTY GryTTY.app/Contents/Info.plist
+	plutil -replace CFBundleName -string GryTTY GryTTY.app/Contents/Info.plist
+	plutil -remove UTExportedTypeDeclarations GryTTY.app/Contents/Info.plist
 
 	# move and compress
-	mv GriTTY.app ../bin/GriTTY.app
+	mv GryTTY.app ../bin/GryTTY.app
 	pushd ../bin/
-	zip -r9 GriTTY_mac.zip GriTTY.app
+	zip -r9 GryTTY_mac.zip GryTTY.app
 	popd
 fi
 
 if $BUILD_FOR_WIN ; then
 	# delete old
-	rm -f ../bin/GriTTY_win32.zip
+	rm -f ../bin/GryTTY_win32.zip
 
 	# get required stuff
 	wget -N "${LOVE_DOWNLOADS}${WIN_DOWNLOAD_FILE}"
@@ -82,16 +82,16 @@ if $BUILD_FOR_WIN ; then
 
 	# build new
 	zip_and_exclude $MAC_FLAG_FILE
-	rm -rf GriTTY_win32
-	mkdir GriTTY_win32
-	cat "${WIN_FOLDER}/love.exe" GriTTY.love > GriTTY_win32/GriTTY.exe
-	mv "${WIN_FOLDER}"/*.dll GriTTY_win32
-	mv "${WIN_FOLDER}/license.txt" GriTTY_win32
+	rm -rf GryTTY_win32
+	mkdir GryTTY_win32
+	cat "${WIN_FOLDER}/love.exe" GryTTY.love > GryTTY_win32/GryTTY.exe
+	mv "${WIN_FOLDER}"/*.dll GryTTY_win32
+	mv "${WIN_FOLDER}/license.txt" GryTTY_win32
 
 	# move and compress
-	cp -r GriTTY_win32 ../bin
+	cp -r GryTTY_win32 ../bin
 	pushd ../bin/
-	zip -r9 GriTTY_win32.zip GriTTY_win32
+	zip -r9 GryTTY_win32.zip GryTTY_win32
 	popd
 fi
 
