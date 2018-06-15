@@ -6,5 +6,5 @@ script:
   - "./build.sh -wm"
 
 after_success:
-  - "./res/butler push bin/GriTTY_mac.zip crass-sandwich/gritty:osx-universal"
-  - "./res/butler push bin/GriTTY_win32.zip crass-sandwich/gritty:windows-32"
+  - "./res/butler push bin/GriTTY_mac.zip crass-sandwich/GriTTY:osx-universal"
+  - "./res/butler push bin/GriTTY_win32.zip crass-sandwich/GriTTY:win-32"
